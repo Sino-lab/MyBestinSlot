@@ -48,8 +48,26 @@ export const BOSSES: Boss[] = [
     { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
     { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
   ]},
-  { n: 3, name: 'Prédaxas', st: 'w', loots: [] },
-  { n: 4, name: 'Pincombe', st: 's', loots: [] },
+  { n: 3, name: 'Prédaxas', st: 'k', loots: [
+    { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Chevalière d'ombre envahissante", slot: 'ring1', ilvl: 197, q: 'epic', mine: true, who: 'Kira' },
+    { name: "Tranche-âmes de l'avant-garde dévorante", slot: 'mainhand', ilvl: 197, q: 'epic', mine: true, who: 'Draxx' },
+    { name: "Flèche d'arque-Vide", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+  ]},
+  { n: 4, name: 'Pincombe', st: 'k', loots: [
+    { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Chaîne d'observation ancienne", slot: 'neck', ilvl: 197, q: 'epic', mine: false, who: 'Valeria' },
+    { name: "Arc long brutal de sentinelle forestière", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Rempart garde-combe", slot: 'offhand', ilvl: 197, q: 'epic', mine: true, who: 'Valeria' },
+  ]},
 ]
 
 export const MIDNIGHT_BOSSES_FULL: Boss[] = [
