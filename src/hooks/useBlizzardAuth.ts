@@ -3,7 +3,7 @@ import { useApp } from '../context/AppContext'
 import type { WowCharacter } from '../types'
 
 const CLIENT_ID = '6c8f3c33a9e347759056401b7ecdad4d'
-const NETLIFY_FN = '/.netlify/functions/blizzard'
+const NETLIFY_FN = '/api/blizzard'
 
 export function getRedirectUri() {
   return `${window.location.origin}${window.location.pathname}`
