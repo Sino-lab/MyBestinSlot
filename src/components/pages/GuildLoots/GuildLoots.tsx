@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useGuild, type GuildTab } from '../../../context/GuildContext'
 import { useApp } from '../../../context/AppContext'
+import { RAIDS } from '../../../data/guild'
 import CreateGroupModal from '../../modals/CreateGroupModal'
 import InviteModal from '../../modals/InviteModal'
 import AssignSlotModal from '../../modals/AssignSlotModal'
@@ -27,6 +28,12 @@ export default function GuildLoots() {
   const [inviteMode, setInviteMode] = useState<InviteMode | null>(null)
   const [assignRole, setAssignRole] = useState<'tank' | 'healer' | 'dps' | null>(null)
   const [assignIdx, setAssignIdx] = useState<number | null>(null)
+  const [selectedRaidIdx, setSelectedRaidIdx] = useState(0)
+
+  const selectedRaid = RAIDS[selectedRaidIdx]
+  const killedCount = selectedRaid.bosses.filter(b => b.st === 'k').length
+  const totalLoots = selectedRaid.bosses.reduce((sum, b) => sum + b.loots.length, 0)
+  const legendaryCount = selectedRaid.bosses.flatMap(b => b.loots).filter(l => l.q === 'legendary').length
 
   const grp = currentGroup()
 
@@ -91,19 +98,27 @@ export default function GuildLoots() {
             {currentGuildTab === 'loots' && (
               <div>
                 <div className={styles.stats4}>
-                  <div className={styles.scard}><div className={styles.sv}>7/9</div><div className={styles.sl}>Bosses</div></div>
-                  <div className={styles.scard}><div className={styles.sv} style={{ color: '#70d070' }}>24</div><div className={styles.sl}>Loots</div></div>
-                  <div className={styles.scard}><div className={styles.sv} style={{ color: 'var(--epic)' }}>8</div><div className={styles.sl}>BiS drops</div></div>
-                  <div className={styles.scard}><div className={styles.sv} style={{ color: 'var(--legendary)' }}>1</div><div className={styles.sl}>Legendary</div></div>
+                  <div className={styles.scard}><div className={styles.sv}>{killedCount}/{selectedRaid.bosses.length}</div><div className={styles.sl}>Boss</div></div>
+                  <div className={styles.scard}><div className={styles.sv} style={{ color: '#70d070' }}>{totalLoots}</div><div className={styles.sl}>Loots</div></div>
+                  <div className={styles.scard}><div className={styles.sv} style={{ color: 'var(--epic)' }}>{selectedRaid.bosses.length}</div><div className={styles.sl}>Encounters</div></div>
+                  <div className={styles.scard}><div className={styles.sv} style={{ color: 'var(--legendary)' }}>{legendaryCount || '—'}</div><div className={styles.sl}>Légendaires</div></div>
                 </div>
                 <div className={styles.viewRow}>
-                  <select className={styles.gsel}><option>Amirdrassil</option><option>Nerubar Palace</option></select>
+                  <select
+                    className={styles.gsel}
+                    value={selectedRaidIdx}
+                    onChange={e => setSelectedRaidIdx(Number(e.target.value))}
+                  >
+                    {RAIDS.map((r, i) => (
+                      <option key={r.id} value={i}>{r.name} ({r.bosses.length} boss)</option>
+                    ))}
+                  </select>
                   <div className={styles.viewSwitch}>
-                    <button className={`${styles.vsw} ${guildView === 'boss' ? styles.vswActive : ''}`} onClick={() => setGuildView('boss')}>By Boss</button>
-                    <button className={`${styles.vsw} ${guildView === 'player' ? styles.vswActive : ''}`} onClick={() => setGuildView('player')}>By Player</button>
+                    <button className={`${styles.vsw} ${guildView === 'boss' ? styles.vswActive : ''}`} onClick={() => setGuildView('boss')}>Par Boss</button>
+                    <button className={`${styles.vsw} ${guildView === 'player' ? styles.vswActive : ''}`} onClick={() => setGuildView('player')}>Par Joueur</button>
                   </div>
                 </div>
-                {guildView === 'boss' ? <BossView /> : <PlayerView />}
+                {guildView === 'boss' ? <BossView bosses={selectedRaid.bosses} /> : <PlayerView />}
               </div>
             )}
             {currentGuildTab === 'roster' && (

@@ -67,6 +67,12 @@ export interface Boss {
   loots: BossLoot[]
 }
 
+export interface Raid {
+  id: number
+  name: string
+  bosses: Boss[]
+}
+
 export interface GuildMemberListItem {
   slot: SlotId
   name: string

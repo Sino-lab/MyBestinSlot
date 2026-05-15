@@ -1,12 +1,16 @@
 import { useState } from 'react'
 import { useGuild } from '../../../context/GuildContext'
 import { useApp } from '../../../context/AppContext'
-import { BOSSES, GUILD_MEMBERS } from '../../../data/guild'
+import { GUILD_MEMBERS } from '../../../data/guild'
 import { SLOT_LABELS } from '../../../data/items'
-import type { LootAttribution } from '../../../types'
+import type { Boss, LootAttribution } from '../../../types'
 import styles from './BossView.module.css'
 
-export default function BossView() {
+interface Props {
+  bosses: Boss[]
+}
+
+export default function BossView({ bosses }: Props) {
   const { lootAttributions, setLootAttributions } = useGuild()
   const { lang, showToast } = useApp()
   const [openBosses, setOpenBosses] = useState<number[]>([])
@@ -17,7 +21,8 @@ export default function BossView() {
   }
 
   function attributeLoot(gk: string, member: typeof GUILD_MEMBERS[0], bossN: number, lootIdx: number) {
-    const bossLoot = BOSSES[bossN - 1]?.loots[lootIdx]
+    const boss = bosses.find(b => b.n === bossN)
+    const bossLoot = boss?.loots[lootIdx]
     setLootAttributions(prev => ({
       ...prev,
       [gk]: { name: member.name, color: member.color, cls: member.cls + ' ' + member.spec }
@@ -31,10 +36,10 @@ export default function BossView() {
 
   return (
     <div className={styles.list}>
-      {BOSSES.map(boss => {
+      {bosses.map((boss, bi) => {
         const isOpen = openBosses.includes(boss.n)
         const stc = boss.st === 'k' ? styles.stK : boss.st === 'w' ? styles.stW : styles.stS
-        const stl = boss.st === 'k' ? '✓ Killed' : boss.st === 'w' ? '✗ Wiped' : '— Skipped'
+        const stl = boss.st === 'k' ? '✓ Tué' : boss.st === 'w' ? '✗ Wipé' : '— Ignoré'
         const conflictCount = boss.loots.filter((_, li) => {
           const needs = GUILD_MEMBERS.filter(m => m.list.some(i => i.name === boss.loots[li].name))
           return needs.length > 1
@@ -43,11 +48,11 @@ export default function BossView() {
         return (
           <div key={boss.n} className={`${styles.bcard} ${isOpen ? styles.open : ''}`}>
             <div className={styles.bheader} onClick={() => toggleBoss(boss.n)}>
-              <div className={styles.bnum}>{boss.n}</div>
+              <div className={styles.bnum}>{bi + 1}</div>
               <div className={styles.bname}>{boss.name}</div>
               <span className={`${styles.bst} ${stc}`}>{stl}</span>
               {conflictCount > 0 && (
-                <span className={styles.conflict}>⚔️ {conflictCount} conflict{conflictCount > 1 ? 's' : ''}</span>
+                <span className={styles.conflict}>⚔️ {conflictCount} conflit{conflictCount > 1 ? 's' : ''}</span>
               )}
               <span className={styles.bneed}>{boss.loots.length ? `${boss.loots.length} loot${boss.loots.length > 1 ? 's' : ''}` : '—'}</span>
               <span className={styles.chev}>▼</span>
@@ -56,7 +61,7 @@ export default function BossView() {
             {isOpen && (
               <div className={styles.bloots}>
                 {!boss.loots.length ? (
-                  <p style={{ padding: '10px 0', color: 'var(--text3)', fontSize: 12 }}>No loots recorded.</p>
+                  <p style={{ padding: '10px 0', color: 'var(--text3)', fontSize: 12 }}>Aucun loot enregistré.</p>
                 ) : boss.loots.map((l, li) => {
                   const gk = `${boss.n}_${li}`
                   const attribution = lootAttributions[gk] as LootAttribution | undefined
@@ -80,15 +85,15 @@ export default function BossView() {
                         <span className={styles.lilvl}>ilvl {l.ilvl}</span>
                         {isAttributed
                           ? <span className={styles.lwho}>→ <strong style={{ color: attribution.color }}>{attribution.name}</strong></span>
-                          : <span className={styles.lwho} style={{ opacity: .6 }}>{needs.length ? 'Unassigned' : '—'}</span>
+                          : <span className={styles.lwho} style={{ opacity: .6 }}>{needs.length ? 'Non attribué' : '—'}</span>
                         }
                       </div>
 
                       {needs.length > 0 && (
                         <div className={`${styles.needsPanel} ${isConflict ? styles.multi : ''}`}>
                           {isConflict
-                            ? <div className={styles.needsLabel}><span className={styles.conflictBadge}>⚔️ {needs.length} players need this</span><span style={{ fontSize: 10, color: 'var(--text3)' }}>Click a player to attribute</span></div>
-                            : <div className={styles.needsLabel}><span style={{ fontSize: 11, color: 'var(--text3)' }}>1 player needs this</span></div>
+                            ? <div className={styles.needsLabel}><span className={styles.conflictBadge}>⚔️ {needs.length} joueurs ont besoin</span><span style={{ fontSize: 10, color: 'var(--text3)' }}>Clique pour attribuer</span></div>
+                            : <div className={styles.needsLabel}><span style={{ fontSize: 11, color: 'var(--text3)' }}>1 joueur a besoin</span></div>
                           }
                           <div className={styles.needsList}>
                             {needs.map((m, ni) => {
@@ -108,8 +113,8 @@ export default function BossView() {
                                     <div className={styles.neederCls}>{m.cls} {m.spec}</div>
                                   </div>
                                   <div className={styles.neederRight}>
-                                    {ni === 0 && !m.hasIt && <span className={styles.prioBadge}>Priority</span>}
-                                    {m.hasIt && <span className={styles.hasBadge}>Already has it</span>}
+                                    {ni === 0 && !m.hasIt && <span className={styles.prioBadge}>Priorité</span>}
+                                    {m.hasIt && <span className={styles.hasBadge}>Déjà obtenu</span>}
                                     <div className={styles.neederProg}>
                                       <div className={styles.neederTrack}><div className={styles.neederFill} style={{ width: pct + '%', background: m.color }} /></div>
                                       <span className={styles.neederPct}>{pct}%</span>
@@ -120,7 +125,7 @@ export default function BossView() {
                             })}
                           </div>
                           {isAttributed && (
-                            <button className={styles.clearAttrib} onClick={() => clearAttribution(gk)}>Clear attribution</button>
+                            <button className={styles.clearAttrib} onClick={() => clearAttribution(gk)}>Retirer l'attribution</button>
                           )}
                         </div>
                       )}
