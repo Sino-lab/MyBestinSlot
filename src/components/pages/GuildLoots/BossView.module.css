@@ -1,0 +1,55 @@
+.list { display: flex; flex-direction: column; gap: 7px; }
+
+.bcard { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); overflow: hidden; }
+.bheader { display: flex; align-items: center; gap: 12px; padding: 11px 15px; cursor: pointer; transition: background .13s; }
+.bheader:hover { background: var(--bg4); }
+.bnum { width: 22px; height: 22px; border-radius: 50%; background: var(--bg3); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text3); flex-shrink: 0; }
+.bname { flex: 1; font-size: 14px; font-weight: 500; }
+.bst { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+.stK { color: #70d070; background: rgba(100,200,100,.1); border: 1px solid rgba(100,200,100,.2); }
+.stW { color: #ff6060; background: rgba(220,50,50,.1); border: 1px solid rgba(220,50,50,.2); }
+.stS { color: var(--text3); background: var(--bg3); border: 1px solid var(--border); }
+.conflict { font-size: 11px; color: #ff8a3a; background: rgba(255,138,58,.12); border: 1px solid rgba(255,138,58,.3); padding: 2px 9px; border-radius: 10px; }
+.bneed { font-size: 12px; color: var(--gold); }
+.chev { font-size: 11px; color: var(--text3); transition: transform .2s; }
+.bcard.open .chev { transform: rotate(180deg); }
+
+.bloots { padding: 0 15px 12px; border-top: 1px solid var(--border); }
+
+.lootEntry { border-bottom: 1px solid rgba(255,255,255,.04); padding-bottom: 5px; margin-bottom: 5px; }
+.lootEntry:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.lootEntry.conflict2 .lrow { border-left: 2px solid #ff8a3a; padding-left: 10px; border-radius: 0 6px 6px 0; }
+
+.lrow { display: flex; align-items: center; gap: 10px; padding: 7px 0; cursor: pointer; }
+.lrow.attributed { border-left: 2px solid var(--green); padding-left: 10px; border-radius: 0 6px 6px 0; }
+.lchk { width: 15px; height: 15px; border-radius: 3px; border: 1.5px solid rgba(255,255,255,.18); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 9px; transition: all .12s; }
+.lchk.lchkDone { background: var(--green); border-color: var(--green); color: #fff; }
+.lname { flex: 1; font-size: 13px; }
+.lslot { font-size: 10px; color: var(--text3); background: var(--bg3); padding: 1px 6px; border-radius: 5px; }
+.lilvl { font-size: 11px; color: var(--text3); }
+.lwho { font-size: 11px; color: var(--text2); font-style: italic; }
+
+.needsPanel { padding: 8px 10px 8px 24px; margin-top: 2px; border-radius: 0 0 8px 8px; }
+.needsPanel.multi { background: rgba(255,138,58,.04); border: 1px solid rgba(255,138,58,.14); border-top: none; }
+.needsLabel { display: flex; align-items: center; justify-content: space-between; margin-bottom: 8px; }
+.conflictBadge { font-size: 11px; color: #ff8a3a; font-weight: 600; }
+.needsList { display: flex; flex-direction: column; gap: 5px; }
+
+.neederBtn { display: flex; align-items: center; gap: 10px; padding: 8px 10px; border-radius: 8px; border: 1px solid rgba(255,255,255,.07); background: var(--bg2); cursor: pointer; transition: all .15s; }
+.neederBtn:hover:not(.hasIt) { border-color: var(--mc, var(--gold)); background: rgba(255,255,255,.03); }
+.neederBtn.selected { border-color: rgba(76,175,80,.45); background: rgba(76,175,80,.07); }
+.neederBtn.hasIt { opacity: .5; cursor: default; }
+.neederAvatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; border: 1px solid; }
+.neederInfo { flex: 1; min-width: 0; }
+.neederName { font-size: 13px; font-weight: 500; }
+.neederCls { font-size: 10px; color: var(--text3); text-transform: capitalize; }
+.neederRight { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+.prioBadge { font-size: 10px; color: #ff8a3a; background: rgba(255,138,58,.12); border: 1px solid rgba(255,138,58,.3); padding: 1px 7px; border-radius: 8px; white-space: nowrap; }
+.hasBadge { font-size: 10px; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); padding: 1px 7px; border-radius: 8px; white-space: nowrap; }
+.neederProg { display: flex; align-items: center; gap: 5px; }
+.neederTrack { width: 56px; height: 3px; background: rgba(255,255,255,.07); border-radius: 2px; overflow: hidden; }
+.neederFill { height: 100%; border-radius: 2px; }
+.neederPct { font-size: 10px; color: var(--text3); min-width: 24px; text-align: right; }
+
+.clearAttrib { margin-top: 8px; background: none; border: 1px solid rgba(255,100,100,.3); color: #ff8080; padding: 4px 12px; border-radius: 6px; font-size: 11px; transition: all .13s; }
+.clearAttrib:hover { background: rgba(255,100,100,.1); }

@@ -1,0 +1,20 @@
+.topRow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; }
+.title { font-family: 'Almendra', serif; font-size: 17px; margin-bottom: 3px; }
+.counter { display: flex; gap: 6px; }
+.pill { font-size: 11px; font-weight: 600; padding: 3px 10px; border-radius: 10px; border: 1px solid; white-space: nowrap; }
+.layout { display: grid; grid-template-columns: repeat(3,1fr); gap: 14px; }
+.col { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px; display: flex; flex-direction: column; gap: 6px; }
+.colHeader { font-size: 13px; font-weight: 600; margin-bottom: 6px; display: flex; align-items: center; gap: 6px; }
+.slot {
+  display: flex; align-items: center; gap: 9px;
+  padding: 9px 11px; border-radius: var(--r);
+  border: 1px dashed rgba(255,255,255,.1); background: rgba(255,255,255,.02);
+  transition: all .13s; min-height: 52px;
+}
+.slot.filled { border-style: solid; border-color: rgba(255,255,255,.08); background: var(--bg3); }
+.slot:not(.filled):hover { border-color: var(--rc, var(--gold)); background: rgba(255,255,255,.03); }
+.rsAvatar { width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; flex-shrink: 0; border: 1px solid; }
+.rsAdd { margin-left: auto; font-size: 11px; color: var(--text3); background: none; border: 1px solid var(--border); border-radius: 5px; padding: 3px 9px; transition: all .13s; flex-shrink: 0; }
+.rsAdd:hover { border-color: var(--rc, var(--gold)); color: var(--rc, var(--gold)); }
+.rsRemove { margin-left: auto; background: none; border: none; color: var(--text3); font-size: 16px; padding: 2px 4px; transition: color .12s; flex-shrink: 0; }
+.rsRemove:hover { color: #ff6060; }

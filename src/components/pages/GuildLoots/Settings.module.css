@@ -1,0 +1,16 @@
+.wrap { max-width: 520px; display: flex; flex-direction: column; gap: 1rem; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 16px; }
+.card.danger { border-color: rgba(220,50,50,.2); }
+.label { font-size: 11px; font-weight: 600; color: var(--text2); text-transform: uppercase; letter-spacing: .07em; }
+.input { background: var(--bg3); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); padding: 6px 12px; font-size: 13px; outline: none; }
+.input:focus { border-color: var(--gold); }
+.compRow { display: flex; align-items: center; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border); }
+.compRow:last-of-type { border-bottom: none; }
+.compLabel { font-size: 13px; font-weight: 500; }
+.stepper { display: flex; align-items: center; gap: 10px; }
+.stepper button { width: 28px; height: 28px; border-radius: 6px; border: 1px solid var(--border2); background: var(--bg3); color: var(--text); font-size: 16px; display: flex; align-items: center; justify-content: center; transition: all .13s; }
+.stepper button:hover { border-color: var(--gold); color: var(--gold); }
+.stepper span { font-size: 16px; font-weight: 600; color: var(--gold); min-width: 24px; text-align: center; }
+.compTotal { font-size: 11px; color: var(--text3); margin-top: 8px; }
+.leaveBtn { margin-top: 8px; background: none; border: 1px solid rgba(220,50,50,.3); color: #ff8080; padding: 7px 16px; border-radius: 6px; font-size: 13px; transition: all .13s; }
+.leaveBtn:hover { background: rgba(220,50,50,.1); }

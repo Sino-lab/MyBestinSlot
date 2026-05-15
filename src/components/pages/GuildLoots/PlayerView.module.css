@@ -1,0 +1,17 @@
+.grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(280px,1fr)); gap: 10px; }
+.card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r2); padding: 14px; }
+.header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+.avatar { width: 34px; height: 34px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 14px; font-weight: 700; flex-shrink: 0; }
+.nameWrap { flex: 1; }
+.name { font-size: 14px; font-weight: 500; }
+.cls { font-size: 11px; }
+.prog { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.track { flex: 1; height: 4px; background: rgba(255,255,255,.07); border-radius: 2px; overflow: hidden; }
+.fill { height: 100%; border-radius: 2px; }
+.pct { font-size: 12px; font-weight: 600; min-width: 30px; text-align: right; }
+.items { display: flex; flex-direction: column; gap: 3px; max-height: 160px; overflow-y: auto; }
+.item { display: flex; align-items: center; gap: 7px; font-size: 12px; padding: 3px 0; }
+.dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.iname { flex: 1; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.iname.got { color: #70d070; text-decoration: line-through; opacity: .6; }
+.islot { font-size: 10px; color: var(--text3); }

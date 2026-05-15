@@ -1,0 +1,35 @@
+.nav {
+  display: flex;
+  padding: 0 1.5rem;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 80px;
+  z-index: 200;
+}
+
+.ntab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 11px 16px;
+  border: none;
+  border-bottom: 2px solid transparent;
+  background: none;
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.ntab:hover { color: var(--text); }
+.ntab.active { color: var(--gold); border-bottom-color: var(--gold); }
+
+.count {
+  background: var(--gold);
+  color: var(--bg);
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+}

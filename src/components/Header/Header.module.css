@@ -1,0 +1,113 @@
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  height: 100px;
+  border-bottom: 1px solid var(--border);
+  background: rgba(10,11,14,0.96);
+  backdrop-filter: blur(16px);
+  position: sticky;
+  top: 0;
+  z-index: 300;
+  gap: 1rem;
+}
+
+.left {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+  min-width: 0;
+}
+
+.logo {
+  flex-shrink: 0;
+}
+
+.logoImg {
+  height: 144px;
+  width: auto;
+  object-fit: contain;
+}
+
+.nav {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+}
+
+.ntab {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--text2);
+  font-size: 13px;
+  font-weight: 500;
+  white-space: nowrap;
+  transition: all .15s;
+}
+.ntab:hover { color: var(--text); background: rgba(255,255,255,.04); }
+.ntab.ntabActive { color: var(--gold); background: var(--gold-dim); }
+
+.count {
+  background: var(--gold);
+  color: var(--bg);
+  border-radius: 10px;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 1px 6px;
+}
+
+.right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.langBtn {
+  padding: 3px 10px;
+  border-radius: 20px;
+  border: 1px solid var(--border2);
+  background: transparent;
+  color: var(--text2);
+  font-size: 12px;
+  transition: all .15s;
+}
+.langBtn:hover, .langBtn.active {
+  border-color: var(--gold);
+  color: var(--gold);
+}
+
+.hbtn {
+  padding: 5px 15px;
+  border-radius: 6px;
+  border: 1px solid var(--gold);
+  background: transparent;
+  color: var(--gold);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all .18s;
+}
+.hbtn:hover { background: var(--gold-dim); }
+.hbtn.primary { background: var(--gold); color: var(--bg); }
+.hbtn.primary:hover { background: var(--gold2); }
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--gold-dim);
+  border: 1px solid var(--gold);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  color: var(--gold);
+  font-weight: 700;
+  cursor: pointer;
+}
