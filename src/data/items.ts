@@ -68,8 +68,6 @@ function genAllBIS(): Item[] {
       ['Visière des prédations', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       ['Diadème de surveillance', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Casque du pilleur des gouffres', 'Gouffres de Midnight', 'epic', 184, 'delves'],
-      ["Heaume des profondeurs d'ombre", 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'neck', items: [
       // Raid
@@ -82,7 +80,6 @@ function genAllBIS(): Item[] {
       ['Pendentif de chagrin lancinant', 'Flèche de Coursevent', 'epic', 210, 'mythicplus'],
       ["Joug de l'ours coureur", 'Antre de Nalorakk', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Pendentif des abysses du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'shoulder', items: [
       // Raid
@@ -105,7 +102,6 @@ function genAllBIS(): Item[] {
       ['Spallières sombres', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       ["Espauliers de l'empoisonneuse", 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Épaulières des profondeurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'back', items: [
       // Raid
@@ -118,7 +114,6 @@ function genAllBIS(): Item[] {
       ['Cape tisseflux', 'Point-nexus Xenas', 'epic', 210, 'mythicplus'],
       ['Drapé de défense réfractaire', 'Terrasse des Magistères', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Manteau des explorateurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'chest', items: [
       // Raid
@@ -142,8 +137,6 @@ function genAllBIS(): Item[] {
       ['Peau de pestilence', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       ['Gilet de manipulation', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Plastron des récupérateurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
-      ["Armure de l'éclaireur des abysses", 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'wrist', items: [
       // Raid
@@ -163,7 +156,6 @@ function genAllBIS(): Item[] {
       ['Manchettes de Kasreth', 'Point-nexus Xenas', 'epic', 210, 'mythicplus'],
       ['Crispins de garde-cœur', 'Point-nexus Xenas', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Brassards des plongeurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'hands', items: [
       // Raid
@@ -185,7 +177,6 @@ function genAllBIS(): Item[] {
       ['Liens des hash\'ura', 'Antre de Nalorakk', 'epic', 210, 'mythicplus'],
       ['Gantelets découragés', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Gantelets des fouilleurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'waist', items: [
       // Raid
@@ -211,7 +202,6 @@ function genAllBIS(): Item[] {
       ['Lien-du-Néant éthérien', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       ['Baudrier de béhémoth', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Ceinturon des excavateurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'legs', items: [
       // Raid
@@ -235,8 +225,6 @@ function genAllBIS(): Item[] {
       ['Cuissières marquées par la Lumière', 'Point-nexus Xenas', 'epic', 210, 'mythicplus'],
       ['Grèves de la ruse divine', 'Point-nexus Xenas', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Jambières des plongeurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
-      ["Grèves de l'arpenteur des abysses", 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'feet', items: [
       // Raid
@@ -261,7 +249,6 @@ function genAllBIS(): Item[] {
       ["Espadrilles de l'éclipse", 'Point-nexus Xenas', 'epic', 210, 'mythicplus'],
       ['Croquenots érodés par la faille', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Bottes des éclaireurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'ring1', items: [
       // Raid
@@ -278,11 +265,9 @@ function genAllBIS(): Item[] {
       ['Lien de gardelumière', 'Le val Aveuglant', 'epic', 210, 'mythicplus'],
       ['Occlusion du Vide', 'Point-nexus Xenas', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Anneau des gardiens du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'ring2', items: [
       // M+
-      ['Bague des profondeurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'trinket1', items: [
       // Raid
@@ -312,12 +297,9 @@ function genAllBIS(): Item[] {
       ['Orbe de ravitaillement', 'Flèche de Coursevent', 'epic', 210, 'mythicplus'],
       ['Remède mycolique', 'Terrasse des Magistères', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Pierre de résonance des gouffres', 'Gouffres de Midnight', 'epic', 184, 'delves'],
-      ['Cristal des profondeurs abyssales', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'trinket2', items: [
       // Gouffres
-      ['Amulette des récupérateurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'mainhand', items: [
       // Raid
@@ -384,8 +366,6 @@ function genAllBIS(): Item[] {
       ['Croissant de Charonus', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       ['Trancheuse de singularité', 'Arène de la Cicatrice du Vide', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Lame des fouilleurs du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
-      ['Bâton des récupérateurs des abysses', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
     { slot: 'offhand', items: [
       // Raid
@@ -403,7 +383,6 @@ function genAllBIS(): Item[] {
       ['Sacrifice de Teldrassil', 'Le val Aveuglant', 'epic', 210, 'mythicplus'],
       ['Réflecteur de reflux', 'Point-nexus Xenas', 'epic', 210, 'mythicplus'],
       // Gouffres
-      ['Bouclier des gardiens du gouffre', 'Gouffres de Midnight', 'epic', 184, 'delves'],
     ]},
   ]
 

@@ -38,7 +38,6 @@ export default function Recommendations() {
   const MODES: { id: Mode; label: string }[] = [
     { id: 'mythicplus', label: '⚡ M+' },
     { id: 'raid', label: '🏰 Raid' },
-    { id: 'delves', label: `⛏️ ${t('mode_del', lang)}` },
   ]
 
   return (

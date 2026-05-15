@@ -1,7 +1,7 @@
 import type { RecoItem, Mode } from '../types'
 
 export function makeReco(mode: Mode): RecoItem[] {
-  const b = mode === 'mythicplus' ? 489 : mode === 'raid' ? 502 : 476
+  const b = mode === 'mythicplus' ? 210 : 197
   return [
     { slot: 'trinket1', name: "Fyrakk's Tainted Rageheart", ilvl: b + 4, source: mode === 'raid' ? 'Fyrakk the Blazing' : 'Mythic+ Vault', prio: 'high', score: 98, reason: 'Best-in-slot trinket. The proc scales extremely well with Mastery and Haste.', q: 'legendary' },
     { slot: 'mainhand', name: mode === 'raid' ? "Fyr'alath the Dream Render" : 'Balefire Branch', ilvl: b + 4, source: mode === 'raid' ? 'Fyrakk the Blazing' : 'Amirdrassil', prio: 'high', score: 95, reason: 'Highest DPS weapon available. Massive upgrade over any alternative.', q: 'legendary' },

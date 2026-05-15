@@ -11,7 +11,6 @@ const MODES = [
   { id: 'all' as const, label: 'All' },
   { id: 'mythicplus' as Mode, label: '⚡ M+' },
   { id: 'raid' as Mode, label: '🏰 Raid' },
-  { id: 'delves' as Mode, label: '⛏️ Delves' },
 ]
 
 export default function AllBis() {

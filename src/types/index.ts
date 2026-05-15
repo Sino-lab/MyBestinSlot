@@ -1,5 +1,5 @@
 export type Quality = 'epic' | 'legendary' | 'rare' | 'uncommon'
-export type Mode = 'mythicplus' | 'raid' | 'delves'
+export type Mode = 'mythicplus' | 'raid'
 export type SlotId =
   | 'head' | 'neck' | 'shoulder' | 'back' | 'chest' | 'wrist'
   | 'hands' | 'waist' | 'legs' | 'feet'
