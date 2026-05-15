@@ -2,64 +2,96 @@ import type { Boss, GuildMember, Group } from '../types'
 
 export const GUILD_MEMBERS: GuildMember[] = [
   { name: 'Thordak', cls: 'warrior', spec: 'Fury', color: '#C69B3A', list: [
-    { slot: 'trinket1', name: "Fyrakk's Tainted Rageheart", q: 'legendary', obtained: false },
-    { slot: 'mainhand', name: "Fyr'alath the Dream Render", q: 'legendary', obtained: false },
-    { slot: 'head', name: 'Helm of Blazing Transcendence', q: 'epic', obtained: true },
-    { slot: 'chest', name: 'Plate of Blazing Resolve', q: 'epic', obtained: false },
-    { slot: 'legs', name: 'Legplates of the Firelord', q: 'epic', obtained: true },
+    { slot: 'trinket1', name: "Insigne pérégrin perdu", q: 'epic', obtained: false },
+    { slot: 'mainhand', name: "Fendoir de bête d'aube agitée", q: 'epic', obtained: false },
+    { slot: 'head', name: "Cabasset de commandement de l'ost", q: 'epic', obtained: true },
+    { slot: 'chest', name: "Robe dorée d'étude abjecte", q: 'epic', obtained: false },
+    { slot: 'legs', name: 'Hauts-de-chausses de voltige dévorants', q: 'epic', obtained: true },
   ]},
   { name: 'Kira', cls: 'mage', spec: 'Fire', color: '#3FC7EB', list: [
-    { slot: 'trinket1', name: "Fyrakk's Tainted Rageheart", q: 'legendary', obtained: true },
-    { slot: 'head', name: 'Crown of the Dreamfire', q: 'epic', obtained: false },
-    { slot: 'mainhand', name: "Dreamer's Crook", q: 'epic', obtained: false },
-    { slot: 'ring1', name: 'Loop of Burning Resolve', q: 'epic', obtained: false },
+    { slot: 'trinket1', name: "Insigne pérégrin perdu", q: 'epic', obtained: true },
+    { slot: 'head', name: "Capuche à plumes de traque-ronces", q: 'epic', obtained: false },
+    { slot: 'mainhand', name: "Sceptre de la Lumière déliée", q: 'epic', obtained: false },
+    { slot: 'ring1', name: "Chevalière d'ombre envahissante", q: 'epic', obtained: false },
   ]},
   { name: 'Valeria', cls: 'paladin', spec: 'Holy', color: '#F48CBA', list: [
-    { slot: 'neck', name: 'Dreamthread Pendant', q: 'epic', obtained: false },
-    { slot: 'chest', name: 'Vestments of Scorched Dreams', q: 'epic', obtained: true },
-    { slot: 'trinket2', name: 'Ashes of the Embersoul', q: 'epic', obtained: false },
+    { slot: 'neck', name: "Chaîne d'observation ancienne", q: 'epic', obtained: false },
+    { slot: 'chest', name: "Robe dorée d'étude abjecte", q: 'epic', obtained: true },
+    { slot: 'offhand', name: "Rempart garde-combe", q: 'epic', obtained: false },
   ]},
   { name: 'Draxx', cls: 'deathknight', spec: 'Unholy', color: '#C41E3A', list: [
-    { slot: 'mainhand', name: "Fyr'alath the Dream Render", q: 'legendary', obtained: false },
-    { slot: 'head', name: 'Helm of Blazing Transcendence', q: 'epic', obtained: false },
-    { slot: 'trinket1', name: "Fyrakk's Tainted Rageheart", q: 'legendary', obtained: true },
-    { slot: 'legs', name: 'Legplates of the Firelord', q: 'epic', obtained: false },
+    { slot: 'mainhand', name: "Tranche-âmes de l'avant-garde dévorante", q: 'epic', obtained: false },
+    { slot: 'head', name: "Cabasset de commandement de l'ost", q: 'epic', obtained: false },
+    { slot: 'trinket1', name: "Insigne pérégrin perdu", q: 'epic', obtained: true },
+    { slot: 'legs', name: 'Hauts-de-chausses de voltige dévorants', q: 'epic', obtained: false },
   ]},
 ]
 
 export const BOSSES: Boss[] = [
-  { n: 1, name: 'Gnarloot', st: 'k', loots: [
-    { name: 'Gauntlets of the Raging Tempest', slot: 'hands', ilvl: 502, q: 'epic', mine: true, who: 'Thordak' },
-    { name: 'Pauldrons of Smoldering Dragon', slot: 'shoulder', ilvl: 502, q: 'epic', mine: false, who: 'Valeria' },
-    { name: 'Staff of the Dreaming Grove', slot: 'mainhand', ilvl: 502, q: 'epic', mine: false, who: 'Kira' },
+  { n: 1, name: "Lu'ashal", st: 'k', loots: [
+    { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: true, who: 'Kira' },
+    { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: 'Valeria' },
+    { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: true, who: 'Thordak' },
+    { name: "Fendoir de bête d'aube agitée", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Sceptre de la Lumière déliée", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: 'Kira' },
+    { name: "Sceptre des Chants éternels rayonnant", slot: 'offhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
   ]},
-  { n: 2, name: 'Igira the Cruel', st: 'k', loots: [
-    { name: 'Belt of Shattered Fate', slot: 'waist', ilvl: 496, q: 'epic', mine: true, who: 'Thordak' },
-    { name: "Igira's Brutal Shoulderguard", slot: 'shoulder', ilvl: 496, q: 'epic', mine: false, who: 'Draxx' },
+  { n: 2, name: "Thorm'belan", st: 'k', loots: [
+    { name: "Daguortie boudeuse", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: 'Draxx' },
+    { name: "Lame-épine florissante", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Florapointe bestiale", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: true, who: 'Thordak' },
+    { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
   ]},
-  { n: 3, name: 'Volcoross', st: 'k', loots: [
-    { name: "Seal of Diurna's Chosen", slot: 'ring1', ilvl: 496, q: 'epic', mine: false, who: 'Kira' },
-    { name: 'Igneous Edge', slot: 'offhand', ilvl: 496, q: 'epic', mine: false, who: 'Valeria' },
+  { n: 3, name: 'Prédaxas', st: 'w', loots: [] },
+  { n: 4, name: 'Pincombe', st: 's', loots: [] },
+]
+
+export const MIDNIGHT_BOSSES_FULL: Boss[] = [
+  { n: 1, name: "Lu'ashal", st: 'k', loots: [
+    { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Fendoir de bête d'aube agitée", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Sceptre de la Lumière déliée", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Sceptre des Chants éternels rayonnant", slot: 'offhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
   ]},
-  { n: 4, name: 'Council of Dreams', st: 'k', loots: [
-    { name: 'Treads of the Living Roots', slot: 'feet', ilvl: 496, q: 'epic', mine: true, who: 'Thordak' },
-    { name: 'Dreamthread Pendant', slot: 'neck', ilvl: 496, q: 'epic', mine: false, who: 'Kira' },
+  { n: 2, name: "Thorm'belan", st: 'k', loots: [
+    { name: "Daguortie boudeuse", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Lame-épine florissante", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Florapointe bestiale", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
   ]},
-  { n: 5, name: 'Larodar', st: 'k', loots: [
-    { name: 'Drape of the Dreaming Vale', slot: 'back', ilvl: 496, q: 'epic', mine: false, who: 'Valeria' },
+  { n: 3, name: 'Prédaxas', st: 'k', loots: [
+    { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Chevalière d'ombre envahissante", slot: 'ring1', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Tranche-âmes de l'avant-garde dévorante", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Flèche d'arque-Vide", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
   ]},
-  { n: 6, name: 'Nymue', st: 'k', loots: [
-    { name: "Nymue's Unraveling Spindle", slot: 'trinket1', ilvl: 496, q: 'epic', mine: true, who: 'Thordak' },
-    { name: 'Loop of Emerald Stars', slot: 'ring2', ilvl: 502, q: 'epic', mine: false, who: 'Kira' },
-  ]},
-  { n: 7, name: 'Smolderon', st: 'k', loots: [
-    { name: 'Ashes of the Embersoul', slot: 'trinket1', ilvl: 502, q: 'epic', mine: true, who: 'Thordak' },
-    { name: 'Circle of Eternal Torment', slot: 'ring1', ilvl: 502, q: 'epic', mine: false, who: 'Draxx' },
-    { name: 'Mantle of the Ember Court', slot: 'shoulder', ilvl: 502, q: 'epic', mine: false, who: 'Draxx' },
-  ]},
-  { n: 8, name: 'Tindral Sageswift', st: 'w', loots: [] },
-  { n: 9, name: 'Fyrakk the Blazing', st: 's', loots: [
-    { name: "Fyr'alath the Dream Render", slot: 'mainhand', ilvl: 502, q: 'legendary', mine: false, who: '—' },
+  { n: 4, name: 'Pincombe', st: 'k', loots: [
+    { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Chaîne d'observation ancienne", slot: 'neck', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Arc long brutal de sentinelle forestière", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
+    { name: "Rempart garde-combe", slot: 'offhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
   ]},
 ]
 
