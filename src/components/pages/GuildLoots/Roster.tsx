@@ -69,7 +69,11 @@ export default function Roster({ onAssign }: Props) {
                         {assignedName[0]}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 13, fontWeight: 500, color: m?.color ?? role.color, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{assignedName}</div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
+                          <span style={{ fontSize: 13, fontWeight: 500, color: m?.color ?? role.color, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{assignedName}</span>
+                          {m?.isOwner && <span className={styles.rankBadge} style={{ background: 'rgba(255,128,0,.15)', border: '1px solid rgba(255,128,0,.3)', color: '#ff9a3c' }}>👑</span>}
+                          {!m?.isOwner && m?.isAdmin && <span className={styles.rankBadge} style={{ background: 'rgba(100,160,255,.15)', border: '1px solid rgba(100,160,255,.3)', color: '#7ab4ff' }}>⚡</span>}
+                        </div>
                         <div style={{ fontSize: 10, color: 'var(--text3)' }}>{m?.cls} {m?.spec}</div>
                       </div>
                       <button className={styles.rsRemove} onClick={() => removeFromRoster(role.key, i)}>×</button>

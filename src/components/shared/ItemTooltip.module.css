@@ -1,0 +1,130 @@
+.wrap {
+  position: fixed;
+  z-index: 9999;
+  pointer-events: none;
+  animation: fadeIn .1s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.box {
+  background: rgba(8, 9, 12, 0.97);
+  border: 1px solid var(--border2);
+  border-radius: 8px;
+  padding: 12px 14px;
+  min-width: 260px;
+  max-width: 310px;
+  box-shadow: 0 12px 40px rgba(0,0,0,.8), inset 0 0 0 1px rgba(255,255,255,.04);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 4px;
+}
+
+.imgWrap {
+  flex-shrink: 0;
+  width: 52px;
+  height: 52px;
+  border-radius: 6px;
+  border: 2px solid;
+  overflow: hidden;
+}
+
+.imgWrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.headerText {
+  flex: 1;
+  min-width: 0;
+}
+
+.name {
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 1.3;
+  margin-bottom: 2px;
+}
+
+.ilvl {
+  font-size: 12px;
+  color: var(--text2);
+  margin-bottom: 1px;
+}
+
+.slotLine {
+  font-size: 11px;
+  color: var(--text3);
+}
+
+.divider {
+  height: 1px;
+  background: rgba(255,255,255,.08);
+  margin: 7px 0;
+}
+
+.statRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 12px;
+  line-height: 1.8;
+}
+
+.statName { color: var(--text2); }
+.statVal  { color: #fff; font-weight: 500; }
+
+.stamRow .statName { color: #88ccff; }
+.stamRow .statVal  { color: #88ccff; }
+
+.priRow .statName { color: #ffcc44; }
+.priRow .statVal  { color: #ffcc44; }
+
+.secRow .statVal { color: #c8ff88; }
+
+.dps {
+  font-size: 12px;
+  color: #ffaa44;
+  margin-bottom: 2px;
+}
+
+.special {
+  font-size: 11px;
+  color: #88aaff;
+  font-style: italic;
+  line-height: 1.4;
+  margin-top: 4px;
+}
+
+.footer {
+  margin-top: 6px;
+  font-size: 11px;
+  color: var(--text3);
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.source {
+  color: var(--text3);
+  font-size: 11px;
+  margin-top: 4px;
+}
+
+.modeBadge {
+  font-size: 10px;
+  padding: 1px 6px;
+  border-radius: 4px;
+  background: rgba(255,255,255,.06);
+  color: var(--text3);
+  white-space: nowrap;
+}

@@ -75,6 +75,52 @@ export const handler: Handler = async (event) => {
       const id = event.queryStringParameters?.id ?? ''
       data = await blizzardFetch(`/data/wow/media/item/${id}`, { namespace: `static-${REGION}` })
     }
+    else if (type === 'oauth-callback') {
+      const code = event.queryStringParameters?.code ?? ''
+      const redirectUri = event.queryStringParameters?.redirect_uri ?? ''
+      if (!code || !redirectUri) throw new Error('Missing code or redirect_uri')
+
+      const clientId = process.env.BLIZZARD_CLIENT_ID!
+      const clientSecret = process.env.BLIZZARD_CLIENT_SECRET!
+      const credentials = Buffer.from(`${clientId}:${clientSecret}`).toString('base64')
+
+      const tokenRes = await fetch('https://oauth.battle.net/token', {
+        method: 'POST',
+        headers: {
+          Authorization: `Basic ${credentials}`,
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: new URLSearchParams({
+          grant_type: 'authorization_code',
+          code,
+          redirect_uri: redirectUri,
+        }).toString(),
+      })
+      if (!tokenRes.ok) {
+        const errText = await tokenRes.text()
+        throw new Error(`Token exchange failed (${tokenRes.status}): ${errText}`)
+      }
+      const tokenData = await tokenRes.json() as { access_token: string }
+
+      const userRes = await fetch('https://oauth.battle.net/userinfo', {
+        headers: { Authorization: `Bearer ${tokenData.access_token}` },
+      })
+      if (!userRes.ok) throw new Error(`Userinfo failed: ${userRes.status}`)
+      const userInfo = await userRes.json() as { battle_tag?: string; sub?: string; id?: number }
+
+      // Return both user info AND the access token (needed for wow.profile calls)
+      data = { ...userInfo, access_token: tokenData.access_token }
+    }
+    else if (type === 'wow-characters') {
+      const token = event.queryStringParameters?.token ?? ''
+      if (!token) throw new Error('Missing token')
+
+      const profileRes = await fetch(`${API_BASE}/profile/user/wow?namespace=profile-${REGION}&locale=fr_FR`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
+      if (!profileRes.ok) throw new Error(`WoW profile failed: ${profileRes.status}`)
+      data = await profileRes.json()
+    }
     else if (type === 'search-items') {
       const q = event.queryStringParameters?.q ?? ''
       data = await blizzardFetch('/data/wow/search/item', {

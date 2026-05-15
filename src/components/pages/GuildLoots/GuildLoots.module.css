@@ -1,4 +1,4 @@
-.page { position: relative; z-index: 1; }
+.page {}
 .inner { padding: 1.5rem 1.75rem; }
 
 .topRow { display: flex; align-items: center; gap: 8px; margin-bottom: 1.25rem; flex-wrap: wrap; }
@@ -17,6 +17,8 @@
 .welcome p { font-size: 14px; color: var(--text2); max-width: 320px; line-height: 1.7; }
 .createBtn { margin-top: .5rem; padding: 9px 20px; border-radius: 8px; border: none; background: var(--gold); color: var(--bg); font-size: 14px; font-weight: 500; transition: background .15s; }
 .createBtn:hover { background: var(--gold2); }
+.joinBtn { margin-top: .5rem; padding: 9px 20px; border-radius: 8px; border: 1px solid var(--gold); background: transparent; color: var(--gold); font-size: 14px; font-weight: 500; transition: all .15s; }
+.joinBtn:hover { background: var(--gold-dim); }
 
 .invBanner { display: flex; align-items: center; gap: 10px; padding: 12px 16px; background: rgba(200,151,42,.08); border: 1px solid rgba(200,151,42,.25); border-radius: var(--r2); margin-bottom: 8px; }
 .invIcon { font-size: 18px; flex-shrink: 0; }

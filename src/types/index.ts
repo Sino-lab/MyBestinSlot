@@ -34,6 +34,7 @@ export interface Item {
   q: Quality
   ilvl: number
   mode: Mode
+  icon?: string
 }
 
 export interface MyListItem extends Item {
@@ -95,7 +96,8 @@ export interface GroupMember {
   spec: string
   color: string
   status: string
-  isAdmin: boolean
+  isOwner: boolean
+  isAdmin: boolean   // co-admin
 }
 
 export interface GroupRoster {
@@ -110,6 +112,13 @@ export interface GroupInvite {
   id: string
 }
 
+export interface CoAdminPermissions {
+  canKick: boolean
+  canInvite: boolean
+  canManageRoster: boolean
+  canAttributeLoots: boolean
+}
+
 export interface Group {
   id: string
   name: string
@@ -119,6 +128,7 @@ export interface Group {
   members: GroupMember[]
   roster: GroupRoster
   invites: GroupInvite[]
+  coAdminPerms: CoAdminPermissions
 }
 
 export interface LootAttribution {
@@ -128,3 +138,13 @@ export interface LootAttribution {
 }
 
 export type LootAttributions = Record<string, LootAttribution>
+
+export interface WowCharacter {
+  id: number
+  name: string
+  realm: string
+  realmSlug: string
+  class: string
+  level: number
+  faction: 'Alliance' | 'Horde'
+}

@@ -1,4 +1,4 @@
-.page { position: relative; z-index: 1; }
+.page {}
 .inner { padding: 1.5rem 1.75rem; }
 
 .topRow { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }

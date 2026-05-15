@@ -1,24 +1,30 @@
 import type { Item, SlotId, SlotType } from '../types'
+import { ITEM_ICONS } from './itemIcons'
 
 const WH = 'https://wow.zamimg.com/images/wow/icons/large/'
 
 export const SLOT_ICONS: Record<SlotId, string> = {
-  head: WH + 'inv_helmet_334v4.jpg',
-  neck: WH + 'inv_jewelry_necklace_35.jpg',
-  shoulder: WH + 'inv_shoulder_333v4.jpg',
-  back: WH + 'inv_cape_335v2.jpg',
-  chest: WH + 'inv_chest_plate_legionendgame_d_01.jpg',
-  wrist: WH + 'inv_bracer_plate_legionendgame_d_01.jpg',
-  hands: WH + 'inv_glove_plate_legionendgame_d_01.jpg',
-  waist: WH + 'inv_belt_plate_legionendgame_d_01.jpg',
-  legs: WH + 'inv_pant_plate_legionendgame_d_01.jpg',
-  feet: WH + 'inv_boot_plate_legionendgame_d_01.jpg',
-  ring1: WH + 'inv_jewelry_ring_149.jpg',
-  ring2: WH + 'inv_jewelry_ring_149.jpg',
-  trinket1: WH + 'inv_jewelry_trinketpvp_90_alliance.jpg',
-  trinket2: WH + 'inv_inscription_talenttome01.jpg',
-  mainhand: WH + 'inv_sword_2h_artifactashbringertier2_d_02.jpg',
-  offhand: WH + 'inv_shield_legionendgame_d_02.jpg',
+  head:     WH + 'inv_helm_plate_raidwarrior_s_01.jpg',
+  neck:     WH + 'inv_jewelry_necklace_62.jpg',
+  shoulder: WH + 'inv_shoulder_plate_raidwarrior_s_01.jpg',
+  back:     WH + 'inv_misc_cape_13.jpg',
+  chest:    WH + 'inv_chest_plate_raidwarrior_s_01.jpg',
+  wrist:    WH + 'inv_bracer_plate_raidwarrior_s_01.jpg',
+  hands:    WH + 'inv_glove_plate_raidwarrior_s_01.jpg',
+  waist:    WH + 'inv_belt_plate_raidwarrior_s_01.jpg',
+  legs:     WH + 'inv_pant_plate_raidwarrior_s_01.jpg',
+  feet:     WH + 'inv_boot_plate_raidwarrior_s_01.jpg',
+  ring1:    WH + 'inv_jewelry_ring_191.jpg',
+  ring2:    WH + 'inv_jewelry_ring_191.jpg',
+  trinket1: WH + 'inv_trinket_pvp_90_alliance.jpg',
+  trinket2: WH + 'inv_trinket_pvp_90_alliance.jpg',
+  mainhand: WH + 'inv_sword_2h_artifactashbringertier2_d_01.jpg',
+  offhand:  WH + 'inv_shield_wod_d_04_alliance.jpg',
+}
+
+export function getItemIcon(name: string, slot: SlotId, icon?: string): string {
+  if (icon) return icon.startsWith('http') ? icon : WH + icon + '.jpg'
+  return ITEM_ICONS[name] ?? SLOT_ICONS[slot]
 }
 
 export const SLOT_TYPE: Record<SlotId, SlotType> = {

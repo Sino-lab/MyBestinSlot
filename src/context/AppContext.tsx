@@ -1,5 +1,12 @@
 import { createContext, useContext, useState, useCallback, useRef, type ReactNode } from 'react'
-import type { Lang, MyListItem, Item } from '../types'
+import type { Lang, MyListItem, Item, WowCharacter } from '../types'
+import type { TooltipItem } from '../components/shared/ItemTooltip'
+
+export interface AuthProfile {
+  battletag: string
+  id: number
+  accessToken: string
+}
 
 type Page = 'allbis' | 'reco' | 'mylist' | 'guild'
 type ToastType = 'success' | 'remove'
@@ -24,7 +31,14 @@ interface AppContextValue {
   toast: ToastState
   showToast: (message: string, type?: ToastType) => void
   authUser: string | null
+  authProfile: AuthProfile | null
+  setAuthProfile: (p: AuthProfile | null) => void
   setAuthUser: (u: string | null) => void
+  characters: WowCharacter[]
+  setCharacters: (chars: WowCharacter[]) => void
+  tooltip: { item: TooltipItem; x: number; y: number } | null
+  showTooltip: (item: TooltipItem, x: number, y: number) => void
+  hideTooltip: () => void
 }
 
 const AppContext = createContext<AppContextValue | null>(null)
@@ -34,8 +48,17 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [page, setPage] = useState<Page>('allbis')
   const [myList, setMyList] = useState<MyListItem[]>([])
   const [toast, setToast] = useState<ToastState>({ message: '', type: 'success', visible: false })
-  const [authUser, setAuthUser] = useState<string | null>(null)
+  const [authProfile, setAuthProfile] = useState<AuthProfile | null>(null)
+  const [characters, setCharacters] = useState<WowCharacter[]>([])
+  const authUser = authProfile?.battletag ?? null
+  const setAuthUser = useCallback((u: string | null) => {
+    if (!u) setAuthProfile(null)
+  }, [])
+  const [tooltip, setTooltip] = useState<{ item: TooltipItem; x: number; y: number } | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+  const showTooltip = useCallback((item: TooltipItem, x: number, y: number) => setTooltip({ item, x, y }), [])
+  const hideTooltip = useCallback(() => setTooltip(null), [])
 
   const showToast = useCallback((message: string, type: ToastType = 'success') => {
     if (toastTimerRef.current) clearTimeout(toastTimerRef.current)
@@ -73,7 +96,9 @@ export function AppProvider({ children }: { children: ReactNode }) {
     <AppContext.Provider value={{
       lang, setLang, page, setPage,
       myList, addToList, removeFromList, toggleObtained, isInList, isInListByName,
-      toast, showToast, authUser, setAuthUser,
+      toast, showToast, authUser, authProfile, setAuthProfile, setAuthUser,
+      characters, setCharacters,
+      tooltip, showTooltip, hideTooltip,
     }}>
       {children}
     </AppContext.Provider>

@@ -18,3 +18,4 @@
 .rsAdd:hover { border-color: var(--rc, var(--gold)); color: var(--rc, var(--gold)); }
 .rsRemove { margin-left: auto; background: none; border: none; color: var(--text3); font-size: 16px; padding: 2px 4px; transition: color .12s; flex-shrink: 0; }
 .rsRemove:hover { color: #ff6060; }
+.rankBadge { font-size: 10px; padding: 1px 4px; border-radius: 4px; flex-shrink: 0; line-height: 1.4; }

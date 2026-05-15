@@ -9,8 +9,13 @@
 .info { flex: 1; min-width: 0; }
 .name { font-size: 14px; font-weight: 500; }
 .meta { font-size: 11px; color: var(--text3); margin-top: 2px; }
-.adminBadge { font-size: 10px; padding: 1px 7px; border-radius: 8px; background: rgba(200,151,42,.15); border: 1px solid rgba(200,151,42,.3); color: var(--gold); }
-.action { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border2); background: transparent; color: var(--text2); transition: all .13s; }
+.badge { font-size: 10px; padding: 1px 7px; border-radius: 8px; font-weight: 600; }
+.ownerBadge { background: rgba(255,128,0,.12); border: 1px solid rgba(255,128,0,.3); color: #ff9a3c; }
+.adminBadge { background: rgba(100,160,255,.12); border: 1px solid rgba(100,160,255,.3); color: #7ab4ff; }
+.youBadge { font-size: 9px; padding: 1px 5px; border-radius: 6px; background: rgba(255,255,255,.06); border: 1px solid var(--border2); color: var(--text3); }
+.action { font-size: 11px; padding: 4px 10px; border-radius: 6px; border: 1px solid var(--border2); background: transparent; color: var(--text2); transition: all .13s; white-space: nowrap; }
 .action:hover { border-color: var(--border3); color: var(--text); }
 .action.danger { border-color: rgba(220,50,50,.3); color: #ff8080; }
 .action.danger:hover { background: rgba(220,50,50,.1); }
+.action.warn { border-color: rgba(200,151,42,.3); color: var(--gold); }
+.action.warn:hover { background: var(--gold-dim); }

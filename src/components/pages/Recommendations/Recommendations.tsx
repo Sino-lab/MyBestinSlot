@@ -8,7 +8,7 @@ import type { WowClass, Spec, Mode, RecoItem } from '../../../types'
 import styles from './Recommendations.module.css'
 
 export default function Recommendations() {
-  const { lang, addToList, removeFromList, isInListByName, showToast, myList } = useApp()
+  const { lang, addToList, removeFromList, isInListByName, showToast, myList, showTooltip, hideTooltip } = useApp()
   const [selectedClass, setSelectedClass] = useState<WowClass | null>(null)
   const [selectedSpec, setSelectedSpec] = useState<Spec | null>(null)
   const [recoMode, setRecoMode] = useState<Mode>('mythicplus')
@@ -119,7 +119,14 @@ export default function Recommendations() {
                 const pl = item.prio === 'high' ? '🔴 High' : item.prio === 'mid' ? '🟡 Medium' : '🟢 Low'
                 const inList = isInListByName(item.name, item.slot)
                 return (
-                  <div key={i} className={styles.rcard} style={{ animationDelay: i * 0.04 + 's' }}>
+                  <div
+                    key={i}
+                    className={styles.rcard}
+                    style={{ animationDelay: i * 0.04 + 's' }}
+                    onMouseEnter={e => showTooltip({ name: item.name, slot: item.slot, ilvl: item.ilvl, q: item.q, source: item.source, mode: recoMode }, e.clientX, e.clientY)}
+                    onMouseMove={e => showTooltip({ name: item.name, slot: item.slot, ilvl: item.ilvl, q: item.q, source: item.source, mode: recoMode }, e.clientX, e.clientY)}
+                    onMouseLeave={hideTooltip}
+                  >
                     <div className={styles.rcardHead}>
                       <span className={`${styles.rbadge} ${pc}`}>{pl}</span>
                       <span className={styles.rslot}>{SL[item.slot]}</span>

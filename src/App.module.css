@@ -1,0 +1,15 @@
+.main {
+  padding: 1.75rem 2rem;
+  max-width: 1300px;
+  margin: 0 auto;
+  min-height: calc(100vh - 60px);
+  box-sizing: border-box;
+}
+
+.pageCard {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  overflow: hidden;
+  min-height: 600px;
+}

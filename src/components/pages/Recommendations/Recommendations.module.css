@@ -1,12 +1,12 @@
-.layout { display: flex; position: relative; z-index: 1; }
+.layout { display: flex; }
 
 .aside {
   width: 248px; flex-shrink: 0;
   border-right: 1px solid var(--border);
-  background: var(--bg2);
+  background: var(--bg3);
   padding: 1.25rem .875rem;
   display: flex; flex-direction: column; gap: 1.25rem;
-  min-height: calc(100vh - 100px);
+  min-height: 600px;
 }
 
 .slabel { font-size: 10px; font-weight: 600; letter-spacing: .1em; color: var(--text3); text-transform: uppercase; display: block; margin-bottom: 8px; padding-left: 2px; }

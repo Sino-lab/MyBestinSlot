@@ -17,17 +17,20 @@ export default function CreateGroupModal({ open, onClose }: Props) {
   const [name, setName] = useState('')
   const [type, setType] = useState<GroupType>('guild')
   const { groups, setGroups, setCurrentGroupId } = useGuild()
-  const { showToast } = useApp()
+  const { showToast, authUser } = useApp()
 
   function handleCreate() {
     const groupName = name.trim() || 'New Group'
-    const code = Math.random().toString(36).substring(2, 8).toUpperCase()
+    const raw = crypto.randomUUID().replace(/-/g, '').toUpperCase()
+    const code = `${raw.slice(0, 4)}-${raw.slice(4, 8)}-${raw.slice(8, 12)}`
+    const creatorName = authUser ?? 'Unknown'
     const newG = {
       id: 'g' + Date.now(), name: groupName, type, code,
       comp: { tank: 2, healer: 4, dps: 14 },
-      members: [{ name: 'Thordak', role: 'DPS', cls: 'Warrior', spec: 'Fury', color: '#C69B3A', status: 'active', isAdmin: true }],
+      members: [{ name: creatorName, role: 'DPS', cls: '—', spec: '—', color: '#C69B3A', status: 'active', isOwner: true, isAdmin: false }],
       roster: { tank: [], healer: [], dps: [] },
       invites: [],
+      coAdminPerms: { canKick: true, canInvite: true, canManageRoster: false, canAttributeLoots: false },
     }
     setGroups([...groups, newG])
     setCurrentGroupId(newG.id)

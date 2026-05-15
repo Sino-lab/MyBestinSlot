@@ -14,7 +14,7 @@ const MODES = [
 ]
 
 export default function AllBis() {
-  const { lang, addToList, removeFromList, isInList, showToast } = useApp()
+  const { lang, addToList, removeFromList, isInList, showToast, showTooltip, hideTooltip } = useApp()
   const [mode, setMode] = useState<Mode | 'all'>('all')
   const [slotFilter, setSlotFilter] = useState('all')
   const [search, setSearch] = useState('')
@@ -139,8 +139,15 @@ export default function AllBis() {
               {items.map((item, idx) => {
                 const inList = isInList(item.id)
                 return (
-                  <div key={item.id} className={`${styles.icard} ${inList ? styles.inList : ''}`} style={{ animationDelay: idx * 0.02 + 's' }}>
-                    <ItemIcon slot={item.slot} quality={item.q} />
+                  <div
+                    key={item.id}
+                    className={`${styles.icard} ${inList ? styles.inList : ''}`}
+                    style={{ animationDelay: idx * 0.02 + 's' }}
+                    onMouseEnter={e => showTooltip(item, e.clientX, e.clientY)}
+                    onMouseMove={e => showTooltip(item, e.clientX, e.clientY)}
+                    onMouseLeave={hideTooltip}
+                  >
+                    <ItemIcon slot={item.slot} quality={item.q} name={item.name} />
                     <div className={styles.info}>
                       <div className={styles.name} style={{ color: `var(--${item.q})` }}>{item.name}</div>
                       <div className={styles.meta2}>{SL[item.slot]} · {item.source} · <span style={{ opacity: .7 }}>{modeLabel(item.mode)}</span></div>

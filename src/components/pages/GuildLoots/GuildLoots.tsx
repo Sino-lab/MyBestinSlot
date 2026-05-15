@@ -3,6 +3,7 @@ import { useGuild, type GuildTab } from '../../../context/GuildContext'
 import { useApp } from '../../../context/AppContext'
 import { RAIDS } from '../../../data/guild'
 import CreateGroupModal from '../../modals/CreateGroupModal'
+import JoinGroupModal from '../../modals/JoinGroupModal'
 import InviteModal from '../../modals/InviteModal'
 import AssignSlotModal from '../../modals/AssignSlotModal'
 import BossView from './BossView'
@@ -25,6 +26,7 @@ export default function GuildLoots() {
   const { groups, currentGroupId, setCurrentGroupId, currentGroup, guildView, setGuildView, currentGuildTab, setCurrentGuildTab } = useGuild()
   const { showToast } = useApp()
   const [createOpen, setCreateOpen] = useState(false)
+  const [joinOpen, setJoinOpen] = useState(false)
   const [inviteMode, setInviteMode] = useState<InviteMode | null>(null)
   const [assignRole, setAssignRole] = useState<'tank' | 'healer' | 'dps' | null>(null)
   const [assignIdx, setAssignIdx] = useState<number | null>(null)
@@ -60,7 +62,10 @@ export default function GuildLoots() {
               </button>
             ))}
           </div>
-          <button className={styles.newBtn} onClick={() => setCreateOpen(true)}>+ New group</button>
+          <div style={{ display: 'flex', gap: 6 }}>
+            <button className={styles.newBtn} onClick={() => setJoinOpen(true)}>🔑 Join</button>
+            <button className={styles.newBtn} onClick={() => setCreateOpen(true)}>+ Create</button>
+          </div>
         </div>
 
         {!groups.length ? (
@@ -69,6 +74,7 @@ export default function GuildLoots() {
             <h2>No group yet</h2>
             <p>Create a group to manage your roster, invite players and track guild loots.</p>
             <button className={styles.createBtn} onClick={() => setCreateOpen(true)}>Create my first group</button>
+            <button className={styles.joinBtn} onClick={() => setJoinOpen(true)}>🔑 Join an existing group</button>
           </div>
         ) : grp ? (
           <div>
@@ -127,12 +133,13 @@ export default function GuildLoots() {
             {currentGuildTab === 'members' && (
               <Members onInviteName={() => setInviteMode('name')} onInviteLink={() => setInviteMode('link')} />
             )}
-            {currentGuildTab === 'settings' && <Settings />}
+            {currentGuildTab === 'settings' && <Settings onInviteName={() => setInviteMode('name')} onInviteLink={() => setInviteMode('link')} />}
           </div>
         ) : null}
       </div>
 
       <CreateGroupModal open={createOpen} onClose={() => setCreateOpen(false)} />
+      <JoinGroupModal open={joinOpen} onClose={() => setJoinOpen(false)} />
       <InviteModal open={inviteMode !== null} mode={inviteMode ?? 'name'} onClose={() => setInviteMode(null)} />
       <AssignSlotModal open={assignRole !== null} role={assignRole} slotIdx={assignIdx} onClose={() => { setAssignRole(null); setAssignIdx(null) }} />
     </div>

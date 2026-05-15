@@ -31,7 +31,7 @@ function modeCls(mode: string) {
 }
 
 export default function MyList() {
-  const { lang, myList, toggleObtained, removeFromList, showToast } = useApp()
+  const { lang, myList, toggleObtained, removeFromList, showToast, showTooltip, hideTooltip } = useApp()
   const [filter, setFilter] = useState<Filter>('all')
   const [groupBy, setGroupBy] = useState<GroupBy>('none')
   const [exportOpen, setExportOpen] = useState(false)
@@ -53,11 +53,18 @@ export default function MyList() {
   function renderItem(item: MyListItem, idx: number) {
     const isCrafted = item.source?.toLowerCase().includes('craft')
     return (
-      <div key={item.id} className={`${styles.item} ${item.obtained ? styles.obtained : ''}`} style={{ animationDelay: idx * 0.025 + 's' }}>
+      <div
+        key={item.id}
+        className={`${styles.item} ${item.obtained ? styles.obtained : ''}`}
+        style={{ animationDelay: idx * 0.025 + 's' }}
+        onMouseEnter={e => showTooltip(item, e.clientX, e.clientY)}
+        onMouseMove={e => showTooltip(item, e.clientX, e.clientY)}
+        onMouseLeave={hideTooltip}
+      >
         <div className={`${styles.chk} ${item.obtained ? styles.chkDone : ''}`} onClick={() => toggleObtained(item.id)}>
           {item.obtained ? '✓' : ''}
         </div>
-        <ItemIcon slot={item.slot} quality={item.q} size={32} />
+        <ItemIcon slot={item.slot} quality={item.q} name={item.name} size={32} />
         <div className={styles.info}>
           <div className={styles.name} style={{ color: `var(--${item.q})` }}>{item.name}</div>
           <div className={styles.tags}>
