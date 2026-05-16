@@ -44,6 +44,17 @@ interface BnetWowProfile {
   }>
 }
 
+async function fetchAvatarUrl(token: string, realmSlug: string, charName: string): Promise<string | undefined> {
+  try {
+    const res = await fetch(`${NETLIFY_FN}?type=character-media&token=${encodeURIComponent(token)}&realm=${realmSlug}&name=${encodeURIComponent(charName.toLowerCase())}`)
+    if (!res.ok) return undefined
+    const data = await res.json() as { assets?: Array<{ key: string; value: string }> }
+    return data.assets?.find(a => a.key === 'avatar')?.value
+  } catch {
+    return undefined
+  }
+}
+
 async function fetchWowCharacters(token: string): Promise<WowCharacter[]> {
   const res = await fetch(`${NETLIFY_FN}?type=wow-characters&token=${encodeURIComponent(token)}`)
   if (!res.ok) return []
@@ -51,18 +62,29 @@ async function fetchWowCharacters(token: string): Promise<WowCharacter[]> {
   const chars: WowCharacter[] = []
   for (const account of data.wow_accounts ?? []) {
     for (const c of account.characters) {
-      chars.push({
-        id: c.id,
-        name: c.name,
-        realm: c.realm.name,
-        realmSlug: c.realm.slug,
-        class: c.playable_class.name,
-        level: c.level,
-        faction: c.faction.type === 'ALLIANCE' ? 'Alliance' : 'Horde',
-      })
+      if (c.level >= 10) {
+        chars.push({
+          id: c.id,
+          name: c.name,
+          realm: c.realm.name,
+          realmSlug: c.realm.slug,
+          class: c.playable_class.name,
+          level: c.level,
+          faction: c.faction.type === 'ALLIANCE' ? 'Alliance' : 'Horde',
+        })
+      }
     }
   }
-  return chars.sort((a, b) => b.level - a.level)
+  chars.sort((a, b) => b.level - a.level)
+
+  // Fetch avatar URLs in parallel (limit to first 20 to avoid too many requests)
+  const top = chars.slice(0, 20)
+  const avatarUrls = await Promise.all(
+    top.map(c => fetchAvatarUrl(token, c.realmSlug, c.name))
+  )
+  top.forEach((c, i) => { c.avatarUrl = avatarUrls[i] })
+
+  return chars
 }
 
 export function useBlizzardOAuthCallback() {

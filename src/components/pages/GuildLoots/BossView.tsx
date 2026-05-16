@@ -98,7 +98,17 @@ export default function BossView({ bosses }: Props) {
                                   style={{ '--mc': color } as React.CSSProperties}
                                   onClick={() => attributeLoot(gk, m.name, color, m.cls, l.name)}
                                 >
-                                  <div className={styles.neederAvatar} style={{ background: color + '22', color, borderColor: color + '44' }}>{m.name[0]}</div>
+                                  <div className={styles.neederAvatar} style={{ background: color + '22', color, borderColor: color + '44', position: 'relative', overflow: 'hidden' }}>
+                                    {m.name[0]}
+                                    {m.avatarUrl && (
+                                      <img
+                                        src={m.avatarUrl}
+                                        alt=""
+                                        style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                                        onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+                                      />
+                                    )}
+                                  </div>
                                   <div className={styles.neederInfo}>
                                     <div className={styles.neederName} style={{ color }}>{m.name}</div>
                                     <div className={styles.neederCls}>{m.cls}</div>

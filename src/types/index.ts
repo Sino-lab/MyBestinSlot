@@ -98,6 +98,10 @@ export interface GroupMember {
   status: string
   isOwner: boolean
   isAdmin: boolean   // co-admin
+  characterId?: number | null
+  realmSlug?: string | null
+  characterName?: string | null
+  avatarUrl?: string | null
 }
 
 export interface GroupRoster {
@@ -149,4 +153,5 @@ export interface WowCharacter {
   class: string
   level: number
   faction: 'Alliance' | 'Horde'
+  avatarUrl?: string
 }

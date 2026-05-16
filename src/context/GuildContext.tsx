@@ -35,6 +35,10 @@ function buildGroup(
       status: 'active',
       isOwner: (m.is_owner as boolean) ?? false,
       isAdmin: (m.is_admin as boolean) ?? false,
+      characterId: (m.character_id as number | null) ?? null,
+      realmSlug: (m.realm_slug as string | null) ?? null,
+      characterName: (m.character_name as string | null) ?? null,
+      avatarUrl: (m.avatar_url as string | null) ?? null,
     }
   })
 
@@ -298,6 +302,9 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       character_name: selectedCharacter?.name ?? null,
       character_realm: selectedCharacter?.realm ?? null,
       character_class: selectedCharacter?.class ?? null,
+      character_id: selectedCharacter?.id ?? null,
+      realm_slug: selectedCharacter?.realmSlug ?? null,
+      avatar_url: selectedCharacter?.avatarUrl ?? null,
       is_owner: true,
       is_admin: false,
     })
@@ -367,6 +374,9 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       character_name: char?.name ?? null,
       character_realm: char?.realm ?? null,
       character_class: char?.class ?? null,
+      character_id: char?.id ?? null,
+      realm_slug: char?.realmSlug ?? null,
+      avatar_url: char?.avatarUrl ?? null,
       is_owner: false,
       is_admin: false,
       member_role: role,

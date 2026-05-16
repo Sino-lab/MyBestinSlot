@@ -139,11 +139,13 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     else if (type === 'character-media') {
       const realmSlug = req.query.realm as string ?? ''
       const charName = req.query.name as string ?? ''
+      const userToken = req.query.token as string ?? ''
       if (!realmSlug || !charName) throw new Error('Missing realm or name')
-      data = await blizzardFetch(`/profile/wow/character/${realmSlug}/${charName.toLowerCase()}/character-media`, {
-        namespace: `profile-${REGION}`,
-        locale: 'fr_FR',
-      })
+      const url = `${API_BASE}/profile/wow/character/${realmSlug}/${charName.toLowerCase()}/character-media?namespace=profile-${REGION}&locale=fr_FR`
+      const token = userToken || await getAppToken()
+      const mediaRes = await fetch(url, { headers: { Authorization: `Bearer ${token}` } })
+      if (!mediaRes.ok) throw new Error(`character-media failed: ${mediaRes.status}`)
+      data = await mediaRes.json()
     }
     else {
       return res.status(400).json({ error: 'Unknown type' })

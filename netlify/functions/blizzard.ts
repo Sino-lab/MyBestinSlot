@@ -121,6 +121,18 @@ export const handler: Handler = async (event) => {
       if (!profileRes.ok) throw new Error(`WoW profile failed: ${profileRes.status}`)
       data = await profileRes.json()
     }
+    else if (type === 'character-media') {
+      const userToken = event.queryStringParameters?.token ?? ''
+      const realmSlug = event.queryStringParameters?.realm ?? ''
+      const charName = (event.queryStringParameters?.name ?? '').toLowerCase()
+      if (!realmSlug || !charName) throw new Error('Missing realm or name')
+
+      const url = `${API_BASE}/profile/wow/character/${realmSlug}/${charName}/character-media?namespace=profile-${REGION}&locale=fr_FR`
+      const tok = userToken || await getToken()
+      const mediaRes = await fetch(url, { headers: { Authorization: `Bearer ${tok}` } })
+      if (!mediaRes.ok) throw new Error(`character-media failed: ${mediaRes.status}`)
+      data = await mediaRes.json()
+    }
     else if (type === 'search-items') {
       const q = event.queryStringParameters?.q ?? ''
       data = await blizzardFetch('/data/wow/search/item', {

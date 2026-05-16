@@ -59,13 +59,23 @@ export default function Members({ onInviteName, onInviteLink }: Props) {
         const canDemote  = myRank === 'owner' && targetRank === 'coadmin'
         const canLeave   = isSelf && myRank !== 'owner'
 
+        const avatarUrl = m.avatarUrl ?? null
+
         return (
           <div key={m.name} className={styles.row}>
             <div
               className={styles.avatar}
-              style={{ background: m.color + '22', color: m.color, border: `1px solid ${m.color}44` }}
+              style={{ background: m.color + '22', color: m.color, border: `1px solid ${m.color}44`, position: 'relative', overflow: 'hidden' }}
             >
               {m.name[0]}
+              {avatarUrl && (
+                <img
+                  src={avatarUrl}
+                  alt=""
+                  style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                  onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+                />
+              )}
             </div>
 
             <div className={styles.info}>

@@ -52,10 +52,16 @@ export default function Header() {
                 onClick={() => setCharSelectOpen(true)}
                 title="Click to change character"
               >
-                <span
-                  className={styles.classDot}
-                  style={{ background: getClassColor(selectedCharacter.class) }}
-                />
+                <div className={styles.charAvatar} style={{ borderColor: getClassColor(selectedCharacter.class) }}>
+                  <span style={{ color: getClassColor(selectedCharacter.class) }}>{selectedCharacter.name[0]}</span>
+                  {selectedCharacter.avatarUrl && (
+                    <img
+                      src={selectedCharacter.avatarUrl}
+                      alt=""
+                      onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+                    />
+                  )}
+                </div>
                 <span className={styles.charDetails}>
                   <span className={styles.charNameHeader}>{selectedCharacter.name}</span>
                   <span className={styles.charRealmHeader}>{selectedCharacter.realm}</span>

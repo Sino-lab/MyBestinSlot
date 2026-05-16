@@ -47,9 +47,17 @@ function CharRow({ char, onSelect }: { char: WowCharacter; onSelect: () => void 
       <span className={styles.colorStrip} style={{ background: color }} />
       <span
         className={styles.avatar}
-        style={{ background: bgColor, borderColor, color }}
+        style={{ background: bgColor, borderColor, color, position: 'relative', overflow: 'hidden' }}
       >
         {char.name[0].toUpperCase()}
+        {char.avatarUrl && (
+          <img
+            src={char.avatarUrl}
+            alt=""
+            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover' }}
+            onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+          />
+        )}
       </span>
       <span className={styles.charInfo}>
         <span className={styles.charNameRow}>

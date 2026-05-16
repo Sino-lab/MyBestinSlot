@@ -14,11 +14,21 @@ export default function PlayerView() {
     <div className={styles.grid}>
       {members.map(member => {
         const color = CLASS_COLORS[member.cls] ?? '#aaaaaa'
+        const avatarUrl = member.avatarUrl ?? null
+
         return (
           <div key={member.name} className={styles.card}>
             <div className={styles.header}>
-              <div className={styles.avatar} style={{ background: color + '22', color, border: `1px solid ${color}44` }}>
+              <div className={styles.avatar} style={{ background: color + '22', color, border: `1px solid ${color}44`, position: 'relative', overflow: 'hidden' }}>
                 {member.name[0]}
+                {avatarUrl && (
+                  <img
+                    src={avatarUrl}
+                    alt=""
+                    style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                    onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+                  />
+                )}
               </div>
               <div className={styles.nameWrap}>
                 <div className={styles.name}>{member.name}</div>
