@@ -117,6 +117,7 @@ export interface CoAdminPermissions {
   canInvite: boolean
   canManageRoster: boolean
   canAttributeLoots: boolean
+  canManageBossStatus: boolean
 }
 
 export interface Group {

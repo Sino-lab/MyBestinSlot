@@ -61,6 +61,7 @@ function buildGroup(
     canInvite: true,
     canManageRoster: false,
     canAttributeLoots: false,
+    canManageBossStatus: false,
   }
 
   return {
@@ -89,6 +90,8 @@ interface GuildContextValue {
   currentGroup: () => Group | undefined
   lootAttributions: LootAttributions
   setLootAttributions: React.Dispatch<React.SetStateAction<LootAttributions>>
+  bossStatuses: Record<string, 'k' | 'w'>
+  toggleBossKill: (groupId: string, bossN: number) => Promise<void>
   guildView: 'boss' | 'player'
   setGuildView: (v: 'boss' | 'player') => void
   currentGuildTab: GuildTab
@@ -125,6 +128,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(false)
   const [currentGroupId, setCurrentGroupId] = useState('')
   const [lootAttributions, setLootAttributions] = useState<LootAttributions>({})
+  const [bossStatuses, setBossStatuses] = useState<Record<string, 'k' | 'w'>>({})
   const [guildView, setGuildView] = useState<'boss' | 'player'>('boss')
   const [currentGuildTab, setCurrentGuildTab] = useState<GuildTab>('loots')
 
@@ -155,11 +159,12 @@ export function GuildProvider({ children }: { children: ReactNode }) {
 
       const groupIds = memberships.map(r => r.group_id as string)
 
-      // Load groups, all members, all roster rows in parallel
-      const [grpRes, allMembersRes, allRosterRes] = await Promise.all([
+      // Load groups, all members, all roster rows and boss statuses in parallel
+      const [grpRes, allMembersRes, allRosterRes, bossStatusRes] = await Promise.all([
         supabase.from('groups').select('*').in('id', groupIds),
         supabase.from('group_members').select('*').in('group_id', groupIds),
         supabase.from('group_roster').select('*').in('group_id', groupIds),
+        supabase.from('boss_statuses').select('group_id,boss_n,is_killed').in('group_id', groupIds),
       ])
 
       if (grpRes.error) throw grpRes.error
@@ -180,6 +185,14 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       })
 
       setGroups(loaded)
+
+      if (!bossStatusRes.error && bossStatusRes.data) {
+        const statusMap: Record<string, 'k' | 'w'> = {}
+        for (const row of bossStatusRes.data as Record<string, unknown>[]) {
+          statusMap[`${row.group_id}_${row.boss_n}`] = row.is_killed ? 'k' : 'w'
+        }
+        setBossStatuses(statusMap)
+      }
       setCurrentGroupId(prev => {
         if (loaded.find(g => g.id === prev)) return prev
         return loaded[0]?.id ?? ''
@@ -244,7 +257,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       }],
       roster: { tank: [], healer: [], dps: [] },
       invites: [],
-      coAdminPerms: { canKick: true, canInvite: true, canManageRoster: false, canAttributeLoots: false },
+      coAdminPerms: { canKick: true, canInvite: true, canManageRoster: false, canAttributeLoots: false, canManageBossStatus: false },
     }
     setGroups(prev => [...prev, optimisticGroup])
     setCurrentGroupId(optimisticId)
@@ -257,7 +270,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
         type,
         code,
         owner_btag: authUser,
-        co_admin_perms: { canKick: true, canInvite: true, canManageRoster: false, canAttributeLoots: false },
+        co_admin_perms: { canKick: true, canInvite: true, canManageRoster: false, canAttributeLoots: false, canManageBossStatus: false },
       })
       .select()
       .single()
@@ -454,6 +467,22 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // -------------------------------------------------------------------------
+  // toggleBossKill
+  // -------------------------------------------------------------------------
+
+  const toggleBossKill = useCallback(async (groupId: string, bossN: number) => {
+    const key = `${groupId}_${bossN}`
+    const next: 'k' | 'w' = (bossStatuses[key] ?? 'w') === 'k' ? 'w' : 'k'
+    setBossStatuses(prev => ({ ...prev, [key]: next }))
+    await supabase
+      .from('boss_statuses')
+      .upsert(
+        { group_id: groupId, boss_n: bossN, is_killed: next === 'k' },
+        { onConflict: 'group_id,boss_n' },
+      )
+  }, [bossStatuses])
+
+  // -------------------------------------------------------------------------
   // leaveGroup
   // -------------------------------------------------------------------------
 
@@ -525,6 +554,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       currentGroupId, setCurrentGroupId,
       currentGroup,
       lootAttributions, setLootAttributions,
+      bossStatuses, toggleBossKill,
       guildView, setGuildView,
       currentGuildTab, setCurrentGuildTab,
       currentUserRank,

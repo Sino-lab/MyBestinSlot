@@ -6,6 +6,8 @@
 .bnum { width: 22px; height: 22px; border-radius: 50%; background: var(--bg3); border: 1px solid var(--border2); display: flex; align-items: center; justify-content: center; font-size: 10px; color: var(--text3); flex-shrink: 0; }
 .bname { flex: 1; font-size: 14px; font-weight: 500; }
 .bst { font-size: 11px; padding: 2px 8px; border-radius: 10px; }
+.bstClickable { cursor: pointer; transition: opacity .15s; }
+.bstClickable:hover { opacity: .75; }
 .stK { color: #70d070; background: rgba(100,200,100,.1); border: 1px solid rgba(100,200,100,.2); }
 .stW { color: #ff6060; background: rgba(220,50,50,.1); border: 1px solid rgba(220,50,50,.2); }
 .stS { color: var(--text3); background: var(--bg3); border: 1px solid var(--border); }

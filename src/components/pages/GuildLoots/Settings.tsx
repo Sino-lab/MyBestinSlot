@@ -4,10 +4,11 @@ import type { CoAdminPermissions } from '../../../types'
 import styles from './Settings.module.css'
 
 const PERM_LABELS: { key: keyof CoAdminPermissions; label: string; desc: string }[] = [
-  { key: 'canKick',           label: 'Kick members',   desc: 'Co-admins can remove regular members from the group.' },
-  { key: 'canInvite',         label: 'Invite members', desc: 'Co-admins can send invitations to new players.' },
-  { key: 'canManageRoster',   label: 'Manage roster',  desc: 'Co-admins can move players between roles in the roster.' },
-  { key: 'canAttributeLoots', label: 'Attribute loots', desc: 'Co-admins can assign loot drops to players.' },
+  { key: 'canKick',             label: 'Kick members',      desc: 'Co-admins can remove regular members from the group.' },
+  { key: 'canInvite',           label: 'Invite members',    desc: 'Co-admins can send invitations to new players.' },
+  { key: 'canManageRoster',     label: 'Manage roster',     desc: 'Co-admins can move players between roles in the roster.' },
+  { key: 'canAttributeLoots',   label: 'Attribute loots',   desc: 'Co-admins can assign loot drops to players.' },
+  { key: 'canManageBossStatus', label: 'Mark boss kills',   desc: 'Co-admins can mark bosses as killed or alive.' },
 ]
 
 interface Props {

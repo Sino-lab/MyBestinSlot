@@ -11,11 +11,14 @@ interface Props {
 }
 
 export default function BossView({ bosses }: Props) {
-  const { lootAttributions, setLootAttributions, currentGroup } = useGuild()
-  const { lang, showToast } = useApp()
+  const { lootAttributions, setLootAttributions, currentGroup, currentGroupId, bossStatuses, toggleBossKill, currentUserRank } = useGuild()
+  const { lang, showToast, authUser } = useApp()
   const [openBosses, setOpenBosses] = useState<number[]>([])
   const SL = SLOT_LABELS[lang]
-  const members = currentGroup()?.members ?? []
+  const grp = currentGroup()
+  const members = grp?.members ?? []
+  const myRank = currentUserRank(authUser)
+  const canToggleKill = myRank === 'owner' || (myRank === 'coadmin' && (grp?.coAdminPerms.canManageBossStatus ?? false))
 
   function toggleBoss(n: number) {
     setOpenBosses(prev => prev.includes(n) ? prev.filter(x => x !== n) : [...prev, n])
@@ -37,15 +40,20 @@ export default function BossView({ bosses }: Props) {
     <div className={styles.list}>
       {bosses.map((boss, bi) => {
         const isOpen = openBosses.includes(boss.n)
-        const stc = boss.st === 'k' ? styles.stK : boss.st === 'w' ? styles.stW : styles.stS
-        const stl = boss.st === 'k' ? '✓ Tué' : boss.st === 'w' ? '✗ Wipé' : '— Ignoré'
+        const effectiveSt = bossStatuses[`${currentGroupId}_${boss.n}`] ?? boss.st
+        const stc = effectiveSt === 'k' ? styles.stK : effectiveSt === 'w' ? styles.stW : styles.stS
+        const stl = effectiveSt === 'k' ? '✓ Tué' : effectiveSt === 'w' ? '✗ Vivant' : '— Ignoré'
 
         return (
           <div key={boss.n} className={`${styles.bcard} ${isOpen ? styles.open : ''}`}>
             <div className={styles.bheader} onClick={() => toggleBoss(boss.n)}>
               <div className={styles.bnum}>{bi + 1}</div>
               <div className={styles.bname}>{boss.name}</div>
-              <span className={`${styles.bst} ${stc}`}>{stl}</span>
+              <span
+                className={`${styles.bst} ${stc} ${canToggleKill ? styles.bstClickable : ''}`}
+                title={canToggleKill ? (effectiveSt === 'k' ? 'Marquer comme vivant' : 'Marquer comme tué') : undefined}
+                onClick={canToggleKill ? e => { e.stopPropagation(); toggleBossKill(currentGroupId, boss.n) } : undefined}
+              >{stl}</span>
               <span className={styles.bneed}>{boss.loots.length ? `${boss.loots.length} loot${boss.loots.length > 1 ? 's' : ''}` : '—'}</span>
               <span className={styles.chev}>▼</span>
             </div>
