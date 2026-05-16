@@ -193,7 +193,32 @@ export function GuildProvider({ children }: { children: ReactNode }) {
         )
       })
 
-      setGroups(loaded)
+      // Patch avatar_url for current user in DB if missing (background, no await)
+      if (selectedCharacter.avatarUrl) {
+        const myRows = memberRows.filter(
+          m => m.battletag === authUser &&
+               m.character_name === selectedCharacter.name &&
+               m.character_realm === selectedCharacter.realm &&
+               !m.avatar_url
+        )
+        for (const row of myRows) {
+          supabase.from('group_members')
+            .update({ avatar_url: selectedCharacter.avatarUrl })
+            .eq('id', row.id as number)
+            .then(() => {})
+        }
+        // Patch local state immediately
+        setGroups(loaded.map(g => ({
+          ...g,
+          members: g.members.map(m =>
+            m.name === authUser && !m.avatarUrl
+              ? { ...m, avatarUrl: selectedCharacter.avatarUrl }
+              : m
+          ),
+        })))
+      } else {
+        setGroups(loaded)
+      }
 
       // Load boss statuses independently — a failure here must not block group display
       supabase.from('boss_statuses').select('group_id,boss_n,is_killed').in('group_id', groupIds)
