@@ -137,18 +137,20 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   // -------------------------------------------------------------------------
 
   const refreshGroups = useCallback(async () => {
-    if (!authUser) {
+    if (!authUser || !selectedCharacter) {
       setGroups([])
       setCurrentGroupId('')
       return
     }
     setLoading(true)
     try {
-      // Find all group_ids where this battletag is a member
+      // Find all group_ids for this specific character
       const { data: memberships, error: memErr } = await supabase
         .from('group_members')
         .select('group_id')
         .eq('battletag', authUser)
+        .eq('character_name', selectedCharacter.name)
+        .eq('character_realm', selectedCharacter.realm)
 
       if (memErr) throw memErr
       if (!memberships || memberships.length === 0) {
@@ -203,7 +205,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
     } finally {
       setLoading(false)
     }
-  }, [authUser])
+  }, [authUser, selectedCharacter])
 
   useEffect(() => { refreshGroups() }, [refreshGroups])
 
