@@ -68,37 +68,24 @@ export default function GuildLoots() {
               >
                 <span>{g.type === 'guild' ? '🏰' : g.type === 'raid' ? '⚔️' : '🌾'}</span>
                 <span className={styles.gselName}>{g.name}</span>
-                {pendingInvites.filter(i => i.groupId === g.id).length > 0 && (
-                  <span className={styles.gselBadge}>{pendingInvites.filter(i => i.groupId === g.id).length}</span>
-                )}
               </button>
             ))}
-          </div>
-          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
-            {pendingInvites.length > 0 && (
-              <span style={{ background: '#c8972a', color: '#0a0b0e', borderRadius: 10, fontSize: 11, fontWeight: 700, padding: '2px 8px' }}>
-                📩 {pendingInvites.length} invite{pendingInvites.length > 1 ? 's' : ''}
-              </span>
-            )}
-            <button className={styles.newBtn} onClick={() => setJoinOpen(true)}>🔑 Join</button>
-            <button className={styles.newBtn} onClick={() => setCreateOpen(true)}>+ Create</button>
-          </div>
-        </div>
-
-        {pendingInvites.length > 0 && (
-          <div>
             {pendingInvites.map(inv => (
-              <div key={inv.id} className={styles.invBanner}>
-                <span className={styles.invIcon}>📩</span>
-                <span className={styles.invText}><strong>{inv.from}</strong> vous invite à rejoindre <strong>{inv.groupName}</strong></span>
-                <div style={{ display: 'flex', gap: 6, marginLeft: 'auto' }}>
-                  <button className={styles.invYes} onClick={() => handleAcceptInvite(inv)}>✓ Join</button>
-                  <button className={styles.invNo} onClick={() => handleDeclineInvite(inv.id)}>✕ Decline</button>
+              <div key={inv.id} className={styles.invCard}>
+                <span className={styles.invCardName}>📩 {inv.groupName}</span>
+                <span className={styles.invCardFrom}>de {inv.from}</span>
+                <div className={styles.invCardActions}>
+                  <button className={styles.invYes} onClick={() => handleAcceptInvite(inv)}>✓</button>
+                  <button className={styles.invNo} onClick={() => handleDeclineInvite(inv.id)}>✕</button>
                 </div>
               </div>
             ))}
           </div>
-        )}
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            <button className={styles.newBtn} onClick={() => setJoinOpen(true)}>🔑 Join</button>
+            <button className={styles.newBtn} onClick={() => setCreateOpen(true)}>+ Create</button>
+          </div>
+        </div>
 
         {!groups.length ? (
           <div className={styles.welcome}>
@@ -110,16 +97,6 @@ export default function GuildLoots() {
           </div>
         ) : grp ? (
           <div>
-            {pendingInvites.filter(inv => inv.groupId === currentGroupId).map(inv => (
-              <div key={inv.id} className={styles.invBanner}>
-                <span className={styles.invIcon}>📩</span>
-                <span className={styles.invText}><strong>{inv.from}</strong> vous invite à rejoindre <strong>{inv.groupName}</strong></span>
-                <div style={{ display: 'flex', gap: 6, marginLeft: 'auto' }}>
-                  <button className={styles.invYes} onClick={() => handleAcceptInvite(inv)}>✓ Join</button>
-                  <button className={styles.invNo} onClick={() => handleDeclineInvite(inv.id)}>✕ Decline</button>
-                </div>
-              </div>
-            ))}
 
             <div className={styles.tabs}>
               {TABS.map(tab => (
