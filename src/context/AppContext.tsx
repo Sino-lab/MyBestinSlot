@@ -50,7 +50,9 @@ const AppContext = createContext<AppContextValue | null>(null)
 export function AppProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>('en')
   const [page, setPage] = useState<Page>('allbis')
-  const [myList, setMyList] = useState<MyListItem[]>([])
+  const [charLists, setCharLists] = useState<Record<number, MyListItem[]>>(() => {
+    try { return JSON.parse(localStorage.getItem('wow_bis_char_lists') ?? '{}') } catch { return {} }
+  })
   const [toast, setToast] = useState<ToastState>({ message: '', type: 'success', visible: false })
   const [authProfile, setAuthProfile] = useState<AuthProfile | null>(null)
   const [characters, setCharacters] = useState<WowCharacter[]>([])
@@ -76,20 +78,32 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const setLang = useCallback((l: Lang) => setLangState(l), [])
 
-  const addToList = useCallback((item: Item) => {
-    setMyList(prev => {
-      if (prev.some(i => i.id === item.id)) return prev
-      return [...prev, { ...item, obtained: false }]
+  const myList: MyListItem[] = selectedCharacter ? (charLists[selectedCharacter.id] ?? []) : []
+
+  function updateList(charId: number, updater: (prev: MyListItem[]) => MyListItem[]) {
+    setCharLists(prev => {
+      const next = { ...prev, [charId]: updater(prev[charId] ?? []) }
+      localStorage.setItem('wow_bis_char_lists', JSON.stringify(next))
+      return next
     })
-  }, [])
+  }
+
+  const addToList = useCallback((item: Item) => {
+    if (!selectedCharacter) return
+    updateList(selectedCharacter.id, prev =>
+      prev.some(i => i.id === item.id) ? prev : [...prev, { ...item, obtained: false }]
+    )
+  }, [selectedCharacter])
 
   const removeFromList = useCallback((id: number) => {
-    setMyList(prev => prev.filter(i => i.id !== id))
-  }, [])
+    if (!selectedCharacter) return
+    updateList(selectedCharacter.id, prev => prev.filter(i => i.id !== id))
+  }, [selectedCharacter])
 
   const toggleObtained = useCallback((id: number) => {
-    setMyList(prev => prev.map(i => i.id === id ? { ...i, obtained: !i.obtained } : i))
-  }, [])
+    if (!selectedCharacter) return
+    updateList(selectedCharacter.id, prev => prev.map(i => i.id === id ? { ...i, obtained: !i.obtained } : i))
+  }, [selectedCharacter])
 
   const isInList = useCallback((id: number) => myList.some(i => i.id === id), [myList])
 
