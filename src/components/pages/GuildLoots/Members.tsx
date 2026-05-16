@@ -117,7 +117,7 @@ export default function Members({ onInviteName, onInviteLink }: Props) {
         const targetRank = m.isOwner ? 'owner' : m.isAdmin ? 'coadmin' : 'member'
         const rc         = m.role === 'Tank' ? '#4a9eff' : m.role === 'Healer' ? '#50d080' : '#ff8040'
         const myCharsInGroup = grp.members.filter(x => x.name === authUser)
-        const canRemoveChar  = isSelf && myRank !== 'owner' && myCharsInGroup.length > 1
+        const canRemoveChar  = isSelf && !m.isOwner && myCharsInGroup.length > 1
         const canKick        = !isSelf && (myRank === 'owner' || (myRank === 'coadmin' && targetRank === 'member' && !!perms?.canKick))
         const canPromote     = myRank === 'owner' && targetRank === 'member'
         const canDemote      = myRank === 'owner' && targetRank === 'coadmin'
