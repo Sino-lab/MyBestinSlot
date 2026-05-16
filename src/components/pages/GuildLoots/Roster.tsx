@@ -60,8 +60,16 @@ export default function Roster({ onAssign }: Props) {
                 <div key={i} className={`${styles.slot} ${assignedName ? styles.filled : ''}`} style={{ '--rc': role.color } as React.CSSProperties}>
                   {assignedName ? (
                     <>
-                      <div className={styles.rsAvatar} style={{ background: (m?.color ?? role.color) + '22', color: m?.color ?? role.color, borderColor: (m?.color ?? role.color) + '44' }}>
+                      <div className={styles.rsAvatar} style={{ background: (m?.color ?? role.color) + '22', color: m?.color ?? role.color, borderColor: (m?.color ?? role.color) + '44', position: 'relative', overflow: 'hidden' }}>
                         {assignedName[0]}
+                        {m?.avatarUrl && (
+                          <img
+                            src={m.avatarUrl}
+                            alt=""
+                            style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }}
+                            onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }}
+                          />
+                        )}
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
