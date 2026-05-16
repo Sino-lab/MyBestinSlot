@@ -24,8 +24,10 @@ export default function InviteModal({ open, mode, onClose }: Props) {
     onClose()
   }
 
+  const inviteLink = `${window.location.origin}/join/${grp?.code}`
+
   function copyLink() {
-    navigator.clipboard.writeText(`https://mybestinslot.app/join/${grp?.code}`).then(() => {
+    navigator.clipboard.writeText(inviteLink).then(() => {
       setCopied(true)
       setTimeout(() => setCopied(false), 1800)
     })
@@ -53,7 +55,7 @@ export default function InviteModal({ open, mode, onClose }: Props) {
         Share this link with your group members. It expires in 24h.
       </p>
       <div className={styles.linkRow}>
-        <input className={styles.linkInput} readOnly value={`https://mybestinslot.app/join/${grp?.code}`} />
+        <input className={styles.linkInput} readOnly value={inviteLink} />
         <button className={styles.copyBtn} onClick={copyLink}>{copied ? 'Copied!' : 'Copy'}</button>
       </div>
       <div className={styles.codeBox}>
