@@ -90,6 +90,7 @@ export interface GuildMember {
 }
 
 export interface GroupMember {
+  dbId?: number
   name: string
   role: string
   cls: string

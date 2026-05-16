@@ -27,6 +27,7 @@ function buildGroup(
   const members = memberRows.map(m => {
     const cls = normalizeClass((m.character_class as string) ?? '')
     return {
+      dbId: m.id as number,
       name: (m.battletag as string) ?? '',
       role: ((m.member_role as string) ?? 'dps').charAt(0).toUpperCase() + ((m.member_role as string) ?? 'dps').slice(1),
       cls,
@@ -110,6 +111,7 @@ interface GuildContextValue {
   joinGroup: (code: string, role?: string, character?: import('../types').WowCharacter | null) => Promise<'ok' | 'not_found' | 'already_member'>
   deleteGroup: (groupId: string) => Promise<void>
   transferOwnership: (groupId: string, newOwnerBattletag: string) => Promise<void>
+  removeCharacter: (groupId: string, dbId: number) => Promise<void>
   kickMember: (groupId: string, battletag: string) => Promise<void>
   promoteMember: (groupId: string, battletag: string) => Promise<void>
   demoteMember: (groupId: string, battletag: string) => Promise<void>
@@ -195,32 +197,42 @@ export function GuildProvider({ children }: { children: ReactNode }) {
         )
       })
 
-      // Patch avatar_url for current user in DB if missing (background, no await)
-      if (selectedCharacter.avatarUrl) {
-        const myRows = memberRows.filter(
-          m => m.battletag === authUser &&
-               m.character_name === selectedCharacter.name &&
-               m.character_realm === selectedCharacter.realm &&
-               !m.avatar_url
+      // Patch missing character_name / avatar_url for current user's rows (background)
+      const myRowsToUpdate = memberRows.filter(
+        m => m.battletag === authUser && (
+          !m.character_name || !m.avatar_url
         )
-        for (const row of myRows) {
-          supabase.from('group_members')
-            .update({ avatar_url: selectedCharacter.avatarUrl })
-            .eq('id', row.id as number)
-            .then(() => {})
+      )
+      for (const row of myRowsToUpdate) {
+        const patch: Record<string, unknown> = {}
+        if (!row.character_name && selectedCharacter.name) {
+          patch.character_name = selectedCharacter.name
+          patch.character_realm = selectedCharacter.realm
+          patch.character_class = selectedCharacter.class
+          patch.character_id = selectedCharacter.id
+          patch.realm_slug = selectedCharacter.realmSlug
         }
-        // Patch local state immediately
-        setGroups(loaded.map(g => ({
-          ...g,
-          members: g.members.map(m =>
-            m.name === authUser && !m.avatarUrl
-              ? { ...m, avatarUrl: selectedCharacter.avatarUrl }
-              : m
-          ),
-        })))
-      } else {
-        setGroups(loaded)
+        if (!row.avatar_url && selectedCharacter.avatarUrl) {
+          patch.avatar_url = selectedCharacter.avatarUrl
+        }
+        if (Object.keys(patch).length > 0) {
+          supabase.from('group_members').update(patch).eq('id', row.id as number).then(() => {})
+        }
       }
+
+      // Patch local state immediately
+      setGroups(loaded.map(g => ({
+        ...g,
+        members: g.members.map(m =>
+          m.name === authUser
+            ? {
+                ...m,
+                characterName: m.characterName ?? selectedCharacter.name,
+                avatarUrl: m.avatarUrl ?? selectedCharacter.avatarUrl ?? null,
+              }
+            : m
+        ),
+      })))
 
       // Load boss statuses independently — a failure here must not block group display
       supabase.from('boss_statuses').select('group_id,boss_n,is_killed').in('group_id', groupIds)
@@ -446,6 +458,16 @@ export function GuildProvider({ children }: { children: ReactNode }) {
     await supabase.from('group_members').update({ is_owner: false, is_admin: false }).eq('group_id', groupId).eq('battletag', authUser)
     await supabase.from('groups').update({ owner_btag: newOwnerBattletag }).eq('id', groupId)
   }, [authUser])
+
+  // removeCharacter (self-remove one specific character row)
+  // -------------------------------------------------------------------------
+
+  const removeCharacter = useCallback(async (groupId: string, dbId: number) => {
+    setGroups(prev => prev.map(g =>
+      g.id !== groupId ? g : { ...g, members: g.members.filter(m => m.dbId !== dbId) }
+    ))
+    await supabase.from('group_members').delete().eq('id', dbId)
+  }, [])
 
   // kickMember
   // -------------------------------------------------------------------------
@@ -715,6 +737,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       joinGroup,
       deleteGroup,
       transferOwnership,
+      removeCharacter,
       kickMember,
       promoteMember,
       demoteMember,
