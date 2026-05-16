@@ -18,11 +18,21 @@ function Pages() {
   useBlizzardOAuthCallback()
 
   useEffect(() => {
+    // Check URL path for invite link
     const match = window.location.pathname.match(/^\/join\/(.+)$/)
     if (match) {
-      setAutoJoinCode(match[1])
+      const code = match[1]
+      localStorage.setItem('pendingJoinCode', code)
+      setAutoJoinCode(code)
       setPage('guild')
       window.history.replaceState(null, '', '/')
+      return
+    }
+    // Check localStorage for code saved before OAuth redirect
+    const pending = localStorage.getItem('pendingJoinCode')
+    if (pending) {
+      setAutoJoinCode(pending)
+      setPage('guild')
     }
   }, [setPage])
 
