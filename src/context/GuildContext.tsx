@@ -159,12 +159,11 @@ export function GuildProvider({ children }: { children: ReactNode }) {
 
       const groupIds = memberships.map(r => r.group_id as string)
 
-      // Load groups, all members, all roster rows and boss statuses in parallel
-      const [grpRes, allMembersRes, allRosterRes, bossStatusRes] = await Promise.all([
+      // Load groups, all members, all roster rows in parallel
+      const [grpRes, allMembersRes, allRosterRes] = await Promise.all([
         supabase.from('groups').select('*').in('id', groupIds),
         supabase.from('group_members').select('*').in('group_id', groupIds),
         supabase.from('group_roster').select('*').in('group_id', groupIds),
-        supabase.from('boss_statuses').select('group_id,boss_n,is_killed').in('group_id', groupIds),
       ])
 
       if (grpRes.error) throw grpRes.error
@@ -186,13 +185,17 @@ export function GuildProvider({ children }: { children: ReactNode }) {
 
       setGroups(loaded)
 
-      if (!bossStatusRes.error && bossStatusRes.data) {
-        const statusMap: Record<string, 'k' | 'w'> = {}
-        for (const row of bossStatusRes.data as Record<string, unknown>[]) {
-          statusMap[`${row.group_id}_${row.boss_n}`] = row.is_killed ? 'k' : 'w'
-        }
-        setBossStatuses(statusMap)
-      }
+      // Load boss statuses independently — a failure here must not block group display
+      supabase.from('boss_statuses').select('group_id,boss_n,is_killed').in('group_id', groupIds)
+        .then(({ data, error }) => {
+          if (!error && data) {
+            const statusMap: Record<string, 'k' | 'w'> = {}
+            for (const row of data as Record<string, unknown>[]) {
+              statusMap[`${row.group_id}_${row.boss_n}`] = row.is_killed ? 'k' : 'w'
+            }
+            setBossStatuses(statusMap)
+          }
+        })
       setCurrentGroupId(prev => {
         if (loaded.find(g => g.id === prev)) return prev
         return loaded[0]?.id ?? ''
