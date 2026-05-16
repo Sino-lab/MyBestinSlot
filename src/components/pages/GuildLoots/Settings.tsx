@@ -59,15 +59,17 @@ export default function Settings({ onInviteName, onInviteLink }: Props) {
   return (
     <div className={styles.wrap}>
       <div className={styles.left}>
-        <div className={styles.card}>
-          <div className={styles.label}>Group name</div>
-          <input
-            className={styles.input}
-            value={grp.name}
-            onChange={e => handleUpdateName(e.target.value)}
-            style={{ width: '100%', marginTop: 6 }}
-          />
-        </div>
+        {myRank === 'owner' && (
+          <div className={styles.card}>
+            <div className={styles.label}>Group name</div>
+            <input
+              className={styles.input}
+              value={grp.name}
+              onChange={e => handleUpdateName(e.target.value)}
+              style={{ width: '100%', marginTop: 6 }}
+            />
+          </div>
+        )}
         {canInvite && (
           <div className={styles.card}>
             <div className={styles.label} style={{ marginBottom: 10 }}>Invite members</div>
