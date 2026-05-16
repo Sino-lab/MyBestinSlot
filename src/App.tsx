@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { AppProvider, useApp } from './context/AppContext'
 import { GuildProvider } from './context/GuildContext'
 import Header from './components/Header/Header'
+import Nav from './components/Nav/Nav'
 import Toast from './components/Toast/Toast'
 import AllBis from './components/pages/AllBis/AllBis'
 import Recommendations from './components/pages/Recommendations/Recommendations'
@@ -57,6 +58,7 @@ export default function App() {
       <GuildProvider>
         <Header />
         <Pages />
+        <Nav />
         <Toast />
       </GuildProvider>
     </AppProvider>

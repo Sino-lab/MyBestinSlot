@@ -55,3 +55,12 @@
 
 .clearAttrib { margin-top: 8px; background: none; border: 1px solid rgba(255,100,100,.3); color: #ff8080; padding: 4px 12px; border-radius: 6px; font-size: 11px; transition: all .13s; }
 .clearAttrib:hover { background: rgba(255,100,100,.1); }
+
+@media (max-width: 640px) {
+  .bheader { gap: 8px; padding: 10px 12px; }
+  .bname { font-size: 13px; }
+  .bneed { display: none; }
+  .lrow { flex-wrap: wrap; gap: 6px; }
+  .lname { font-size: 12px; min-width: 0; }
+  .needsList { grid-template-columns: repeat(2, 1fr) !important; }
+}

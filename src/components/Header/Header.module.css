@@ -207,3 +207,17 @@
   border-left: 1px solid var(--border2);
   padding-left: 8px;
 }
+
+@media (max-width: 640px) {
+  .header {
+    grid-template-columns: 1fr auto;
+    padding: 0 1rem;
+  }
+  .nav { display: none; }
+  .logoText { font-size: 16px; }
+  .battletag { max-width: 90px; font-size: 12px; }
+  .btSubtext { display: none; }
+  .charNameHeader { max-width: 80px; font-size: 12px; }
+  .charRealmHeader { display: none; }
+  .langBtn { display: none; }
+}

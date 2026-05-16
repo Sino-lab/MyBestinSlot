@@ -79,3 +79,11 @@
 .addBtn:hover { background: var(--gold-dim); border-color: var(--gold); }
 .addBtn.added { border-color: rgba(76,175,80,.4); color: #4caf50; background: rgba(76,175,80,.08); }
 .addBtn.added:hover { background: rgba(76,175,80,.12); }
+
+@media (max-width: 640px) {
+  .inner { padding: 0.75rem; max-width: 100%; }
+  .topRow { flex-direction: column; align-items: flex-start; gap: 8px; }
+  .modes { flex-wrap: wrap; }
+  .filters { gap: 4px; }
+  .chip { font-size: 11px; padding: 4px 10px; }
+}

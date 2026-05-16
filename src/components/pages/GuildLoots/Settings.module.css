@@ -41,3 +41,9 @@
   background: #fff; transition: left .2s;
 }
 .toggleOn .toggleThumb { left: 19px; }
+
+@media (max-width: 640px) {
+  .wrap { flex-direction: column; }
+  .left { flex: none; width: 100%; }
+  .right { width: 100%; }
+}

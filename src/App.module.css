@@ -13,3 +13,14 @@
   overflow: hidden;
   min-height: 600px;
 }
+
+@media (max-width: 640px) {
+  .main {
+    padding: 0.75rem;
+    min-height: calc(100vh - 56px - 64px);
+  }
+  .pageCard {
+    border-radius: var(--r);
+    min-height: unset;
+  }
+}

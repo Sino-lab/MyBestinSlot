@@ -74,3 +74,20 @@
 .addBtn { display: flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 6px; border: 1px solid rgba(200,151,42,.4); background: transparent; color: var(--gold); font-size: 12px; white-space: nowrap; transition: all .15s; }
 .addBtn:hover { background: var(--gold-dim); border-color: var(--gold); }
 .addBtn.added { border-color: rgba(76,175,80,.4); color: #4caf50; background: rgba(76,175,80,.08); }
+
+@media (max-width: 640px) {
+  .layout { flex-direction: column; }
+  .aside {
+    width: 100%;
+    min-height: unset;
+    border-right: none;
+    border-bottom: 1px solid var(--border);
+    padding: 1rem 0.75rem;
+    gap: 1rem;
+  }
+  .cgrid { grid-template-columns: repeat(4, 1fr); }
+  .content { padding: 0; }
+  .welcome { min-height: 200px; padding: 1.5rem; }
+  .recoTop { flex-direction: column; align-items: flex-start; gap: 8px; padding: 1rem 0.75rem 0; }
+  .grid { padding: 0 0.75rem 0.75rem; }
+}
