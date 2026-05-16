@@ -136,6 +136,15 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
       if (!profileRes.ok) throw new Error(`WoW profile failed: ${profileRes.status}`)
       data = await profileRes.json()
     }
+    else if (type === 'character-media') {
+      const realmSlug = req.query.realm as string ?? ''
+      const charName = req.query.name as string ?? ''
+      if (!realmSlug || !charName) throw new Error('Missing realm or name')
+      data = await blizzardFetch(`/profile/wow/character/${realmSlug}/${charName.toLowerCase()}/character-media`, {
+        namespace: `profile-${REGION}`,
+        locale: 'fr_FR',
+      })
+    }
     else {
       return res.status(400).json({ error: 'Unknown type' })
     }

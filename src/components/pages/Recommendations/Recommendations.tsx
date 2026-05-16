@@ -2,17 +2,16 @@ import { useState } from 'react'
 import { useApp } from '../../../context/AppContext'
 import { CLASSES, CLASS_COLORS } from '../../../data/classes'
 import { makeReco } from '../../../data/reco'
-import { SLOT_LABELS } from '../../../data/items'
 import { t } from '../../../data/i18n'
+import CharacterPanel from './CharacterPanel'
 import type { WowClass, Spec, Mode, RecoItem } from '../../../types'
 import styles from './Recommendations.module.css'
 
 export default function Recommendations() {
-  const { lang, addToList, removeFromList, isInListByName, showToast, myList, showTooltip, hideTooltip } = useApp()
+  const { lang, addToList, removeFromList, isInListByName, showToast, myList, selectedCharacter } = useApp()
   const [selectedClass, setSelectedClass] = useState<WowClass | null>(null)
   const [selectedSpec, setSelectedSpec] = useState<Spec | null>(null)
   const [recoMode, setRecoMode] = useState<Mode>('mythicplus')
-  const SL = SLOT_LABELS[lang]
 
   function pickClass(cls: WowClass) {
     setSelectedClass(cls)
@@ -102,7 +101,11 @@ export default function Recommendations() {
             <div className={styles.recoTop}>
               <div>
                 <h2 className={styles.recoTitle}>{t('reco_title', lang)}</h2>
-                <p style={{ fontSize: 12, color: 'var(--text3)' }}>{t('reco_sub', lang)}</p>
+                <p style={{ fontSize: 12, color: 'var(--text3)' }}>
+                  {selectedCharacter
+                    ? `${selectedCharacter.name} · ${selectedClass?.name ?? ''} ${selectedSpec?.name ?? ''}`
+                    : t('reco_sub', lang)}
+                </p>
               </div>
               <div className={styles.modes}>
                 {MODES.map(m => (
@@ -113,41 +116,11 @@ export default function Recommendations() {
               </div>
             </div>
 
-            <div className={styles.grid}>
-              {reco.map((item, i) => {
-                const pc = item.prio === 'high' ? styles.ph : item.prio === 'mid' ? styles.pm : styles.pl
-                const pl = item.prio === 'high' ? '🔴 High' : item.prio === 'mid' ? '🟡 Medium' : '🟢 Low'
-                const inList = isInListByName(item.name, item.slot)
-                return (
-                  <div
-                    key={i}
-                    className={styles.rcard}
-                    style={{ animationDelay: i * 0.04 + 's' }}
-                    onMouseEnter={e => showTooltip({ name: item.name, slot: item.slot, ilvl: item.ilvl, q: item.q, source: item.source, mode: recoMode }, e.clientX, e.clientY)}
-                    onMouseMove={e => showTooltip({ name: item.name, slot: item.slot, ilvl: item.ilvl, q: item.q, source: item.source, mode: recoMode }, e.clientX, e.clientY)}
-                    onMouseLeave={hideTooltip}
-                  >
-                    <div className={styles.rcardHead}>
-                      <span className={`${styles.rbadge} ${pc}`}>{pl}</span>
-                      <span className={styles.rslot}>{SL[item.slot]}</span>
-                    </div>
-                    <div className={styles.rname} style={{ color: `var(--${item.q})` }}>{item.name}</div>
-                    <div className={styles.rreason}>{item.reason}</div>
-                    <div><span className={styles.rsrc}>📍 {item.source} · ilvl {item.ilvl}</span></div>
-                    <div className={styles.rscore}>
-                      <span className={styles.rscoreLabel}>Score</span>
-                      <div className={styles.sbar}><div className={styles.sfill} style={{ width: item.score + '%' }} /></div>
-                      <span className={styles.sval}>{item.score}</span>
-                    </div>
-                    <div className={styles.rcardFoot}>
-                      <button className={`${styles.addBtn} ${inList ? styles.added : ''}`} onClick={() => toggleReco(item)}>
-                        {inList ? t('in_my_list', lang) : t('add_to_list', lang)}
-                      </button>
-                    </div>
-                  </div>
-                )
-              })}
-            </div>
+            <CharacterPanel
+              items={reco}
+              mode={recoMode}
+              onToggle={toggleReco}
+            />
           </div>
         )}
       </div>
