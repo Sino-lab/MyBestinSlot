@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react'
 import { AppProvider, useApp } from './context/AppContext'
 import { GuildProvider } from './context/GuildContext'
 import Header from './components/Header/Header'
@@ -12,15 +13,26 @@ import { useBlizzardOAuthCallback } from './hooks/useBlizzardAuth'
 import styles from './App.module.css'
 
 function Pages() {
-  const { page, tooltip } = useApp()
+  const { page, setPage, tooltip } = useApp()
+  const [autoJoinCode, setAutoJoinCode] = useState<string | undefined>()
   useBlizzardOAuthCallback()
+
+  useEffect(() => {
+    const match = window.location.pathname.match(/^\/join\/(.+)$/)
+    if (match) {
+      setAutoJoinCode(match[1])
+      setPage('guild')
+      window.history.replaceState(null, '', '/')
+    }
+  }, [setPage])
+
   return (
     <main className={styles.main}>
       <div className={styles.pageCard}>
         {page === 'allbis' && <AllBis />}
         {page === 'reco' && <Recommendations />}
         {page === 'mylist' && <MyList />}
-        {page === 'guild' && <GuildLoots />}
+        {page === 'guild' && <GuildLoots autoJoinCode={autoJoinCode} />}
       </div>
       {tooltip && <ItemTooltip item={tooltip.item} x={tooltip.x} y={tooltip.y} />}
       <CharacterSelectModal />

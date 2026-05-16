@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { useGuild, type GuildTab } from '../../../context/GuildContext'
 import { useApp } from '../../../context/AppContext'
 import { RAIDS } from '../../../data/guild'
@@ -22,11 +22,13 @@ const TABS: { id: GuildTab; label: string }[] = [
   { id: 'settings', label: '⚙️ Settings' },
 ]
 
-export default function GuildLoots() {
+export default function GuildLoots({ autoJoinCode }: { autoJoinCode?: string }) {
   const { groups, currentGroupId, setCurrentGroupId, currentGroup, guildView, setGuildView, currentGuildTab, setCurrentGuildTab } = useGuild()
   const { showToast } = useApp()
   const [createOpen, setCreateOpen] = useState(false)
   const [joinOpen, setJoinOpen] = useState(false)
+
+  useEffect(() => { if (autoJoinCode) setJoinOpen(true) }, [autoJoinCode])
   const [inviteMode, setInviteMode] = useState<InviteMode | null>(null)
   const [assignRole, setAssignRole] = useState<'tank' | 'healer' | 'dps' | null>(null)
   const [assignIdx, setAssignIdx] = useState<number | null>(null)
@@ -139,7 +141,7 @@ export default function GuildLoots() {
       </div>
 
       <CreateGroupModal open={createOpen} onClose={() => setCreateOpen(false)} />
-      <JoinGroupModal open={joinOpen} onClose={() => setJoinOpen(false)} />
+      <JoinGroupModal open={joinOpen} initialCode={autoJoinCode} onClose={() => setJoinOpen(false)} />
       <InviteModal open={inviteMode !== null} mode={inviteMode ?? 'name'} onClose={() => setInviteMode(null)} />
       <AssignSlotModal open={assignRole !== null} role={assignRole} slotIdx={assignIdx} onClose={() => { setAssignRole(null); setAssignIdx(null) }} />
     </div>

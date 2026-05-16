@@ -1,14 +1,16 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Modal from '../shared/Modal'
 import { useGuild } from '../../context/GuildContext'
 import { useApp } from '../../context/AppContext'
 import styles from './Modal.module.css'
 
-interface Props { open: boolean; onClose: () => void }
+interface Props { open: boolean; onClose: () => void; initialCode?: string }
 
-export default function JoinGroupModal({ open, onClose }: Props) {
-  const [code, setCode] = useState('')
+export default function JoinGroupModal({ open, initialCode, onClose }: Props) {
+  const [code, setCode] = useState(initialCode ?? '')
   const [error, setError] = useState('')
+
+  useEffect(() => { if (initialCode) setCode(initialCode) }, [initialCode])
   const [busy, setBusy] = useState(false)
   const { joinGroup } = useGuild()
   const { showToast } = useApp()
