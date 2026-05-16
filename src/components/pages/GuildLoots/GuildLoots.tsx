@@ -95,7 +95,7 @@ export default function GuildLoots() {
           </div>
         ) : grp ? (
           <div>
-            {pendingInvites.map(inv => (
+            {pendingInvites.filter(inv => inv.groupId === currentGroupId).map(inv => (
               <div key={inv.id} className={styles.invBanner}>
                 <span className={styles.invIcon}>📩</span>
                 <span className={styles.invText}><strong>{inv.from}</strong> vous invite à rejoindre <strong>{inv.groupName}</strong></span>
