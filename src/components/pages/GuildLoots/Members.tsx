@@ -130,7 +130,7 @@ export default function Members({ onInviteName, onInviteLink }: Props) {
               className={styles.avatar}
               style={{ background: m.color + '22', color: m.color, border: `1px solid ${m.color}44`, position: 'relative', overflow: 'hidden' }}
             >
-              {m.name[0]}
+              {(m.characterName ?? m.name)[0]}
               {avatarUrl && (
                 <img
                   src={avatarUrl}
@@ -143,14 +143,20 @@ export default function Members({ onInviteName, onInviteLink }: Props) {
 
             <div className={styles.info}>
               <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
-                <span className={styles.name} style={{ color: m.color }}>{m.name}</span>
+                <span className={styles.name} style={{ color: m.color }}>{m.characterName ?? m.name}</span>
                 {m.isOwner && <span className={`${styles.badge} ${styles.ownerBadge}`}>👑 Owner</span>}
                 {!m.isOwner && m.isAdmin && <span className={`${styles.badge} ${styles.adminBadge}`}>⚡ Co-Admin</span>}
                 {isSelf && <span className={styles.youBadge}>You</span>}
               </div>
               <div className={styles.meta}>
-                {m.cls !== '—' ? `${m.cls} ${m.spec} · ` : ''}
+                {m.cls && m.cls !== '—' && (
+                  <span style={{ color: m.color, opacity: .8 }}>
+                    {m.cls.charAt(0).toUpperCase() + m.cls.slice(1)}
+                  </span>
+                )}
+                {m.cls && m.cls !== '—' && ' · '}
                 <span style={{ color: rc }}>{m.role}</span>
+                {m.characterName && <span style={{ color: 'var(--text3)', marginLeft: 6 }}>· {m.name}</span>}
               </div>
             </div>
 
