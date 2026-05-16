@@ -132,12 +132,14 @@ export function AppProvider({ children }: { children: ReactNode }) {
       mode: item.mode ?? 'mythicplus',
       obtained: false,
     }, { onConflict: 'character_id,slot,name' }).select().single()
-      .then(({ data }) => {
+      .then(({ data, error }) => {
+        if (error) {
+          console.error('[addToList] Supabase error:', error.message, error.details, error.hint)
+        }
         if (data) {
           setMyList(prev => prev.map(i => i.id === tempId ? { ...i, id: (data as Record<string, unknown>).id as number } : i))
-        } else {
-          setMyList(prev => prev.filter(i => i.id !== tempId))
         }
+        // Keep item in list even if Supabase fails — don't silently remove
       })
   }, [selectedCharacter, authUser])
 
