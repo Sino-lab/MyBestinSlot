@@ -1,4 +1,5 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
+import { useApp } from '../../context/AppContext'
 import styles from './Modal.module.css'
 
 interface Props {
@@ -9,6 +10,12 @@ interface Props {
 }
 
 export default function Modal({ open, onClose, children, wide }: Props) {
+  const { hideTooltip } = useApp()
+
+  useEffect(() => {
+    if (open) hideTooltip()
+  }, [open])
+
   if (!open) return null
 
   return (
