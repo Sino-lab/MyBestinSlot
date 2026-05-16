@@ -352,8 +352,8 @@ export function GuildProvider({ children }: { children: ReactNode }) {
     const formatted  = normalized.length === 12
       ? `${normalized.slice(0, 4)}-${normalized.slice(4, 8)}-${normalized.slice(8, 12)}`
       : code.trim().toUpperCase()
-    const { data, error } = await supabase.from('groups').select('id').eq('code', formatted).single()
-    return !error && !!data
+    const { data } = await supabase.from('groups').select('id').eq('code', formatted).maybeSingle()
+    return !!data
   }, [])
 
   const joinGroup = useCallback(async (
@@ -382,7 +382,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
     const grp = grpData as Record<string, unknown>
     const groupId = grp.id as string
 
-    // Check already member for this specific character
+    // Check already member for this specific character (.maybeSingle avoids 406 when no row found)
     const { data: existing } = await supabase
       .from('group_members')
       .select('id')
@@ -390,12 +390,12 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       .eq('battletag', authUser)
       .eq('character_name', char?.name ?? '')
       .eq('character_realm', char?.realm ?? '')
-      .single()
+      .maybeSingle()
 
     if (existing) return 'already_member'
 
-    // Insert member
-    const { error: insErr } = await supabase.from('group_members').insert({
+    // Insert member — try with avatar_url first, fall back without if column missing
+    const insertPayload: Record<string, unknown> = {
       group_id: groupId,
       battletag: authUser,
       character_name: char?.name ?? null,
@@ -407,7 +407,16 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       is_owner: false,
       is_admin: false,
       member_role: role,
-    })
+    }
+
+    let { error: insErr } = await supabase.from('group_members').insert(insertPayload)
+
+    if (insErr?.message?.includes('avatar_url')) {
+      // Column not yet added — retry without it
+      const { avatar_url: _av, ...payloadWithout } = insertPayload
+      const retry = await supabase.from('group_members').insert(payloadWithout)
+      insErr = retry.error
+    }
 
     if (insErr) throw new Error(insErr.message)
 
