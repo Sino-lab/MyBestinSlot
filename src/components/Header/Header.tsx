@@ -1,4 +1,5 @@
 import { useApp } from '../../context/AppContext'
+import { useGuild } from '../../context/GuildContext'
 import { t } from '../../data/i18n'
 import { loginWithBlizzard } from '../../hooks/useBlizzardAuth'
 import { getClassColor } from '../modals/CharacterSelectModal'
@@ -16,6 +17,7 @@ export default function Header() {
     lang, myList, authUser, authProfile, setAuthProfile, setCharacters,
     page, setPage, selectedCharacter, setSelectedCharacter, setCharSelectOpen,
   } = useApp()
+  const { pendingInvites } = useGuild()
 
   function logout() {
     setAuthProfile(null)
@@ -38,6 +40,9 @@ export default function Header() {
             {tab.icon} {t(tab.key, lang)}
             {tab.id === 'mylist' && myList.length > 0 && (
               <span className={styles.count}>{myList.length}</span>
+            )}
+            {tab.id === 'guild' && pendingInvites.length > 0 && (
+              <span className={styles.count}>{pendingInvites.length}</span>
             )}
           </button>
         ))}

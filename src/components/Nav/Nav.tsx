@@ -1,4 +1,5 @@
 import { useApp } from '../../context/AppContext'
+import { useGuild } from '../../context/GuildContext'
 import { t } from '../../data/i18n'
 import styles from './Nav.module.css'
 
@@ -11,6 +12,7 @@ const TABS = [
 
 export default function Nav() {
   const { page, setPage, lang, myList } = useApp()
+  const { pendingInvites } = useGuild()
 
   return (
     <nav className={styles.nav}>
@@ -23,6 +25,9 @@ export default function Nav() {
           {tab.icon} {t(tab.key, lang)}
           {tab.id === 'mylist' && myList.length > 0 && (
             <span className={styles.count}>{myList.length}</span>
+          )}
+          {tab.id === 'guild' && pendingInvites.length > 0 && (
+            <span className={styles.count}>{pendingInvites.length}</span>
           )}
         </button>
       ))}
