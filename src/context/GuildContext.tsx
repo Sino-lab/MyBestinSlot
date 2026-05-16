@@ -99,6 +99,7 @@ interface GuildContextValue {
   currentUserRank: (authUser: string | null) => MemberRank
   // Supabase actions
   createGroup: (name: string, type: GroupType) => Promise<void>
+  validateGroupCode: (code: string) => Promise<boolean>
   joinGroup: (code: string, role?: string, character?: import('../types').WowCharacter | null) => Promise<'ok' | 'not_found' | 'already_member'>
   kickMember: (groupId: string, battletag: string) => Promise<void>
   promoteMember: (groupId: string, battletag: string) => Promise<void>
@@ -308,6 +309,15 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   // -------------------------------------------------------------------------
   // joinGroup
   // -------------------------------------------------------------------------
+
+  const validateGroupCode = useCallback(async (code: string): Promise<boolean> => {
+    const normalized = code.trim().toUpperCase().replace(/[^A-Z0-9]/g, '')
+    const formatted  = normalized.length === 12
+      ? `${normalized.slice(0, 4)}-${normalized.slice(4, 8)}-${normalized.slice(8, 12)}`
+      : code.trim().toUpperCase()
+    const { data, error } = await supabase.from('groups').select('id').eq('code', formatted).single()
+    return !error && !!data
+  }, [])
 
   const joinGroup = useCallback(async (
     code: string,
@@ -571,6 +581,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       currentGuildTab, setCurrentGuildTab,
       currentUserRank,
       createGroup,
+      validateGroupCode,
       joinGroup,
       kickMember,
       promoteMember,

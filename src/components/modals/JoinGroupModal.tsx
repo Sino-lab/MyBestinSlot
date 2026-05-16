@@ -29,7 +29,7 @@ export default function JoinGroupModal({ open, initialCode = '', onClose }: Prop
   const [character, setCharacter] = useState<WowCharacter | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
-  const { joinGroup } = useGuild()
+  const { joinGroup, validateGroupCode } = useGuild()
   const { showToast, authUser, characters, selectedCharacter } = useApp()
 
   useEffect(() => {
@@ -51,10 +51,17 @@ export default function JoinGroupModal({ open, initialCode = '', onClose }: Prop
     onClose()
   }
 
-  function handleNext() {
+  async function handleNext() {
     if (!code.trim()) { setError('Enter a group code.'); return }
-    setStep(2)
-    setError('')
+    setBusy(true)
+    try {
+      const valid = await validateGroupCode(code)
+      if (!valid) { setError('No group found with this code.'); return }
+      setStep(2)
+      setError('')
+    } finally {
+      setBusy(false)
+    }
   }
 
   function handleNextRole() {
@@ -67,7 +74,7 @@ export default function JoinGroupModal({ open, initialCode = '', onClose }: Prop
     try {
       const result = await joinGroup(code, role, character)
       if (result === 'not_found') {
-        setError('No group found with this code.')
+        setError('Something went wrong. Try again.')
         setStep(1)
       } else if (result === 'already_member') {
         setError(`${character?.name ?? 'This character'} is already in this group.`)
@@ -122,8 +129,10 @@ export default function JoinGroupModal({ open, initialCode = '', onClose }: Prop
             <div className={styles.hint} style={{ marginTop: 6 }}>Ask your group admin for the invite code.</div>
           </div>
           <div className={styles.actions}>
-            <button className={styles.cancel} onClick={handleClose}>Cancel</button>
-            <button className={styles.submit} onClick={handleNext}>Next →</button>
+            <button className={styles.cancel} onClick={handleClose} disabled={busy}>Cancel</button>
+            <button className={styles.submit} onClick={handleNext} disabled={busy}>
+              {busy ? 'Checking…' : 'Next →'}
+            </button>
           </div>
         </>
       )}
