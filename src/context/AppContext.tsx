@@ -1,6 +1,7 @@
-import { createContext, useContext, useState, useCallback, useRef, type ReactNode } from 'react'
+import { createContext, useContext, useState, useCallback, useRef, useEffect, type ReactNode } from 'react'
 import type { Lang, MyListItem, Item, WowCharacter } from '../types'
 import type { TooltipItem } from '../components/shared/ItemTooltip'
+import { supabase, supabaseReady } from '../lib/supabase'
 
 export interface AuthProfile {
   battletag: string
@@ -23,6 +24,7 @@ interface AppContextValue {
   page: Page
   setPage: (p: Page) => void
   myList: MyListItem[]
+  listLoading: boolean
   addToList: (item: Item) => void
   removeFromList: (id: number) => void
   toggleObtained: (id: number) => void
@@ -52,9 +54,8 @@ const AppContext = createContext<AppContextValue | null>(null)
 export function AppProvider({ children }: { children: ReactNode }) {
   const [lang, setLangState] = useState<Lang>('en')
   const [page, setPage] = useState<Page>('allbis')
-  const [charLists, setCharLists] = useState<Record<number, MyListItem[]>>(() => {
-    try { return JSON.parse(localStorage.getItem('wow_bis_char_lists') ?? '{}') } catch { return {} }
-  })
+  const [myList, setMyList] = useState<MyListItem[]>([])
+  const [listLoading, setListLoading] = useState(false)
   const [toast, setToast] = useState<ToastState>({ message: '', type: 'success', visible: false })
   const [authProfile, setAuthProfile] = useState<AuthProfile | null>(null)
   const [characters, setCharacters] = useState<WowCharacter[]>([])
@@ -67,6 +68,36 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, [])
   const [tooltip, setTooltip] = useState<{ item: TooltipItem; x: number; y: number } | null>(null)
   const toastTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const myListRef = useRef<MyListItem[]>([])
+
+  // Keep ref in sync for stable callbacks
+  useEffect(() => { myListRef.current = myList }, [myList])
+
+  // Load BiS list from Supabase when character changes
+  useEffect(() => {
+    if (!selectedCharacter || !supabaseReady) {
+      setMyList([])
+      return
+    }
+    setListLoading(true)
+    supabase
+      .from('bis_items')
+      .select('*')
+      .eq('character_id', selectedCharacter.id)
+      .then(({ data }) => {
+        setMyList((data ?? []).map((row: Record<string, unknown>) => ({
+          id: row.id as number,
+          slot: row.slot as MyListItem['slot'],
+          name: row.name as string,
+          q: row.q as MyListItem['q'],
+          ilvl: row.ilvl as number,
+          source: row.source as string,
+          mode: row.mode as MyListItem['mode'],
+          obtained: row.obtained as boolean,
+        })))
+        setListLoading(false)
+      })
+  }, [selectedCharacter])
 
   const showTooltip = useCallback((item: TooltipItem, x: number, y: number) => setTooltip({ item, x, y }), [])
   const hideTooltip = useCallback(() => setTooltip(null), [])
@@ -81,32 +112,47 @@ export function AppProvider({ children }: { children: ReactNode }) {
 
   const setLang = useCallback((l: Lang) => setLangState(l), [])
 
-  const myList: MyListItem[] = selectedCharacter ? (charLists[selectedCharacter.id] ?? []) : []
-
-  function updateList(charId: number, updater: (prev: MyListItem[]) => MyListItem[]) {
-    setCharLists(prev => {
-      const next = { ...prev, [charId]: updater(prev[charId] ?? []) }
-      localStorage.setItem('wow_bis_char_lists', JSON.stringify(next))
-      return next
-    })
-  }
-
   const addToList = useCallback((item: Item) => {
-    if (!selectedCharacter) return
-    updateList(selectedCharacter.id, prev =>
-      prev.some(i => i.id === item.id) ? prev : [...prev, { ...item, obtained: false }]
+    if (!selectedCharacter || !authUser || !supabaseReady) return
+    // Optimistic
+    const tempId = -Date.now()
+    setMyList(prev =>
+      prev.some(i => i.name === item.name && i.slot === item.slot)
+        ? prev
+        : [...prev, { ...item, id: tempId, obtained: false }]
     )
-  }, [selectedCharacter])
+    supabase.from('bis_items').upsert({
+      battletag: authUser,
+      character_id: selectedCharacter.id,
+      slot: item.slot,
+      name: item.name,
+      q: item.q,
+      ilvl: item.ilvl,
+      source: item.source ?? '',
+      mode: item.mode ?? 'mythicplus',
+      obtained: false,
+    }, { onConflict: 'character_id,slot,name' }).select().single()
+      .then(({ data }) => {
+        if (data) {
+          setMyList(prev => prev.map(i => i.id === tempId ? { ...i, id: (data as Record<string, unknown>).id as number } : i))
+        } else {
+          setMyList(prev => prev.filter(i => i.id !== tempId))
+        }
+      })
+  }, [selectedCharacter, authUser])
 
   const removeFromList = useCallback((id: number) => {
-    if (!selectedCharacter) return
-    updateList(selectedCharacter.id, prev => prev.filter(i => i.id !== id))
-  }, [selectedCharacter])
+    setMyList(prev => prev.filter(i => i.id !== id))
+    if (supabaseReady) supabase.from('bis_items').delete().eq('id', id)
+  }, [])
 
   const toggleObtained = useCallback((id: number) => {
-    if (!selectedCharacter) return
-    updateList(selectedCharacter.id, prev => prev.map(i => i.id === id ? { ...i, obtained: !i.obtained } : i))
-  }, [selectedCharacter])
+    const item = myListRef.current.find(i => i.id === id)
+    if (!item) return
+    const obtained = !item.obtained
+    setMyList(prev => prev.map(i => i.id === id ? { ...i, obtained } : i))
+    if (supabaseReady) supabase.from('bis_items').update({ obtained }).eq('id', id)
+  }, [])
 
   const isInList = useCallback((id: number) => myList.some(i => i.id === id), [myList])
 
@@ -118,7 +164,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   return (
     <AppContext.Provider value={{
       lang, setLang, page, setPage,
-      myList, addToList, removeFromList, toggleObtained, isInList, isInListByName,
+      myList, listLoading, addToList, removeFromList, toggleObtained, isInList, isInListByName,
       toast, showToast, authUser, authProfile, setAuthProfile, setAuthUser,
       characters, setCharacters,
       selectedCharacter, setSelectedCharacter,

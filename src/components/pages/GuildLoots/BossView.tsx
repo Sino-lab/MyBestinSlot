@@ -11,7 +11,7 @@ interface Props {
 }
 
 export default function BossView({ bosses }: Props) {
-  const { lootAttributions, setLootAttributions, currentGroup, currentGroupId, bossStatuses, toggleBossKill, currentUserRank } = useGuild()
+  const { lootAttributions, saveLootAttribution, clearLootAttribution, currentGroup, currentGroupId, bossStatuses, toggleBossKill, currentUserRank } = useGuild()
   const { lang, showToast, authUser } = useApp()
   const [openBosses, setOpenBosses] = useState<number[]>([])
   const SL = SLOT_LABELS[lang]
@@ -25,15 +25,14 @@ export default function BossView({ bosses }: Props) {
   }
 
   function attributeLoot(gk: string, memberName: string, memberColor: string, memberCls: string, lootName: string) {
-    setLootAttributions(prev => ({
-      ...prev,
-      [gk]: { name: memberName, color: memberColor, cls: memberCls }
-    }))
+    if (!currentGroupId) return
+    saveLootAttribution(currentGroupId, gk, { name: memberName, color: memberColor, cls: memberCls })
     showToast(`${lootName} → ${memberName}!`, 'success')
   }
 
   function clearAttribution(gk: string) {
-    setLootAttributions(prev => { const n = { ...prev }; delete n[gk]; return n })
+    if (!currentGroupId) return
+    clearLootAttribution(currentGroupId, gk)
   }
 
   return (

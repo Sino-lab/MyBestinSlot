@@ -90,6 +90,8 @@ interface GuildContextValue {
   currentGroup: () => Group | undefined
   lootAttributions: LootAttributions
   setLootAttributions: React.Dispatch<React.SetStateAction<LootAttributions>>
+  saveLootAttribution: (groupId: string, gk: string, attribution: import('../types').LootAttribution) => Promise<void>
+  clearLootAttribution: (groupId: string, gk: string) => Promise<void>
   bossStatuses: Record<string, 'k' | 'w'>
   toggleBossKill: (groupId: string, bossN: number) => Promise<void>
   guildView: 'boss' | 'player'
@@ -489,6 +491,46 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   }, [])
 
   // -------------------------------------------------------------------------
+  // Load loot attributions when group changes
+  // -------------------------------------------------------------------------
+
+  useEffect(() => {
+    if (!currentGroupId) { setLootAttributions({}); return }
+    supabase
+      .from('loot_attributions')
+      .select('*')
+      .eq('group_id', currentGroupId)
+      .then(({ data }) => {
+        const map: LootAttributions = {}
+        for (const row of (data ?? []) as Record<string, unknown>[]) {
+          map[row.loot_key as string] = {
+            name: row.member_name as string,
+            color: row.member_color as string,
+            cls: row.member_cls as string,
+          }
+        }
+        setLootAttributions(map)
+      })
+  }, [currentGroupId])
+
+  const saveLootAttribution = useCallback(async (
+    groupId: string,
+    gk: string,
+    attribution: import('../types').LootAttribution,
+  ) => {
+    setLootAttributions(prev => ({ ...prev, [gk]: attribution }))
+    await supabase.from('loot_attributions').upsert(
+      { group_id: groupId, loot_key: gk, member_name: attribution.name, member_color: attribution.color, member_cls: attribution.cls },
+      { onConflict: 'group_id,loot_key' },
+    )
+  }, [])
+
+  const clearLootAttribution = useCallback(async (groupId: string, gk: string) => {
+    setLootAttributions(prev => { const n = { ...prev }; delete n[gk]; return n })
+    await supabase.from('loot_attributions').delete().eq('group_id', groupId).eq('loot_key', gk)
+  }, [])
+
+  // -------------------------------------------------------------------------
   // toggleBossKill
   // -------------------------------------------------------------------------
 
@@ -575,7 +617,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       loading,
       currentGroupId, setCurrentGroupId,
       currentGroup,
-      lootAttributions, setLootAttributions,
+      lootAttributions, setLootAttributions, saveLootAttribution, clearLootAttribution,
       bossStatuses, toggleBossKill,
       guildView, setGuildView,
       currentGuildTab, setCurrentGuildTab,
