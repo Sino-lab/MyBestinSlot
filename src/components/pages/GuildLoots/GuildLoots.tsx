@@ -23,8 +23,8 @@ const TABS: { id: GuildTab; label: string }[] = [
 ]
 
 export default function GuildLoots() {
-  const { groups, currentGroupId, setCurrentGroupId, currentGroup, guildView, setGuildView, currentGuildTab, setCurrentGuildTab } = useGuild()
-  const { showToast, pendingJoinCode, setPendingJoinCode } = useApp()
+  const { groups, currentGroupId, setCurrentGroupId, currentGroup, guildView, setGuildView, currentGuildTab, setCurrentGuildTab, pendingInvites, acceptInvite, declineInvite, joinGroup } = useGuild()
+  const { showToast, pendingJoinCode, setPendingJoinCode, selectedCharacter } = useApp()
   const [createOpen, setCreateOpen] = useState(false)
   const [joinOpen, setJoinOpen] = useState(false)
 
@@ -43,10 +43,16 @@ export default function GuildLoots() {
 
   const grp = currentGroup()
 
-  function answerInvite(_invId: string, accept: boolean) {
-    // handled inside GuildContext via group mutation would be cleaner,
-    // but for simplicity we use showToast here
-    showToast(accept ? 'Joined the group!' : 'Invitation declined', accept ? 'success' : 'remove')
+  async function handleAcceptInvite(inv: import('../../../types').GroupInvite) {
+    await acceptInvite(inv)
+    const result = await joinGroup(inv.code, 'dps', selectedCharacter)
+    if (result === 'ok') showToast(`Joined ${inv.groupName}!`, 'success')
+    else if (result === 'already_member') showToast('Already in this group', 'remove')
+  }
+
+  async function handleDeclineInvite(inviteId: string) {
+    await declineInvite(inviteId)
+    showToast('Invitation declined', 'remove')
   }
 
   return (
@@ -66,7 +72,12 @@ export default function GuildLoots() {
               </button>
             ))}
           </div>
-          <div style={{ display: 'flex', gap: 6 }}>
+          <div style={{ display: 'flex', gap: 6, alignItems: 'center' }}>
+            {pendingInvites.length > 0 && (
+              <span style={{ background: '#c8972a', color: '#0a0b0e', borderRadius: 10, fontSize: 11, fontWeight: 700, padding: '2px 8px' }}>
+                📩 {pendingInvites.length} invite{pendingInvites.length > 1 ? 's' : ''}
+              </span>
+            )}
             <button className={styles.newBtn} onClick={() => setJoinOpen(true)}>🔑 Join</button>
             <button className={styles.newBtn} onClick={() => setCreateOpen(true)}>+ Create</button>
           </div>
@@ -82,13 +93,13 @@ export default function GuildLoots() {
           </div>
         ) : grp ? (
           <div>
-            {grp.invites?.map(inv => (
+            {pendingInvites.map(inv => (
               <div key={inv.id} className={styles.invBanner}>
                 <span className={styles.invIcon}>📩</span>
-                <span className={styles.invText}><strong>{inv.from}</strong> invited you to join <strong>{inv.groupName}</strong></span>
+                <span className={styles.invText}><strong>{inv.from}</strong> vous invite à rejoindre <strong>{inv.groupName}</strong></span>
                 <div style={{ display: 'flex', gap: 6, marginLeft: 'auto' }}>
-                  <button className={styles.invYes} onClick={() => answerInvite(inv.id, true)}>✓ Join</button>
-                  <button className={styles.invNo} onClick={() => answerInvite(inv.id, false)}>✕ Decline</button>
+                  <button className={styles.invYes} onClick={() => handleAcceptInvite(inv)}>✓ Join</button>
+                  <button className={styles.invNo} onClick={() => handleDeclineInvite(inv.id)}>✕ Decline</button>
                 </div>
               </div>
             ))}

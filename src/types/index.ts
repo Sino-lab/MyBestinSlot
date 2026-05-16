@@ -112,9 +112,11 @@ export interface GroupRoster {
 }
 
 export interface GroupInvite {
-  from: string
-  groupName: string
   id: string
+  groupId: string
+  groupName: string
+  from: string
+  code: string
 }
 
 export interface CoAdminPermissions {

@@ -13,17 +13,28 @@ interface Props {
 export default function InviteModal({ open, mode, onClose }: Props) {
   const [name, setName] = useState('')
   const [copied, setCopied] = useState(false)
-  const { currentGroup } = useGuild()
+  const [sending, setSending] = useState(false)
+  const [error, setError] = useState('')
+  const { currentGroup, currentGroupId, sendInvite } = useGuild()
   const { showToast } = useApp()
   const grp = currentGroup()
 
   const inviteLink = `${window.location.origin}?join=${grp?.code}`
 
-  function sendInvite() {
-    if (!name.trim()) return
-    showToast(`Invite sent to ${name}!`, 'success')
-    setName('')
-    onClose()
+  async function handleSendInvite() {
+    if (!name.trim() || !grp) return
+    setSending(true)
+    setError('')
+    try {
+      await sendInvite(currentGroupId, grp.name, grp.code, name.trim())
+      showToast(`Invite sent to ${name.trim()}!`, 'success')
+      setName('')
+      onClose()
+    } catch (e) {
+      setError(e instanceof Error ? e.message : 'Failed to send invite')
+    } finally {
+      setSending(false)
+    }
   }
 
   function copyLink() {
@@ -37,13 +48,22 @@ export default function InviteModal({ open, mode, onClose }: Props) {
     <Modal open={open} onClose={onClose}>
       <h3 className={styles.title}>Invite a player</h3>
       <div className={styles.field}>
-        <label>In-app username</label>
-        <input value={name} onChange={e => setName(e.target.value)} placeholder="PlayerName#1234" />
+        <label>Battle.net tag</label>
+        <input
+          value={name}
+          onChange={e => { setName(e.target.value); setError('') }}
+          placeholder="PlayerName#1234"
+          onKeyDown={e => e.key === 'Enter' && handleSendInvite()}
+          disabled={sending}
+        />
       </div>
+      {error && <p style={{ fontSize: 12, color: '#ff6060', marginTop: 4 }}>{error}</p>}
       <p className={styles.hint}>They'll receive an invitation in their Guild Loots tab.</p>
       <div className={styles.actions}>
-        <button className={styles.cancel} onClick={onClose}>Cancel</button>
-        <button className={styles.submit} onClick={sendInvite}>Send invite</button>
+        <button className={styles.cancel} onClick={onClose} disabled={sending}>Cancel</button>
+        <button className={styles.submit} onClick={handleSendInvite} disabled={sending || !name.trim()}>
+          {sending ? 'Sending…' : 'Send invite'}
+        </button>
       </div>
     </Modal>
   )

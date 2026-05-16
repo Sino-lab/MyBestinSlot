@@ -2,7 +2,7 @@ import {
   createContext, useContext, useState, useCallback, useEffect,
   type ReactNode,
 } from 'react'
-import type { Group, GroupRoster, CoAdminPermissions, GroupType, LootAttributions } from '../types'
+import type { Group, GroupRoster, CoAdminPermissions, GroupType, LootAttributions, GroupInvite } from '../types'
 import { supabase } from '../lib/supabase'
 import { CLASS_COLORS } from '../data/classes'
 import { useApp } from './AppContext'
@@ -105,6 +105,10 @@ interface GuildContextValue {
   currentGuildTab: GuildTab
   setCurrentGuildTab: (t: GuildTab) => void
   currentUserRank: (authUser: string | null) => MemberRank
+  pendingInvites: GroupInvite[]
+  sendInvite: (groupId: string, groupName: string, groupCode: string, toBattletag: string) => Promise<void>
+  acceptInvite: (invite: GroupInvite) => Promise<void>
+  declineInvite: (inviteId: string) => Promise<void>
   // Supabase actions
   createGroup: (name: string, type: GroupType) => Promise<void>
   validateGroupCode: (code: string) => Promise<boolean>
@@ -143,6 +147,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   const [bossStatuses, setBossStatuses] = useState<Record<string, 'k' | 'w'>>({})
   const [guildView, setGuildView] = useState<'boss' | 'player'>('boss')
   const [currentGuildTab, setCurrentGuildTab] = useState<GuildTab>('loots')
+  const [pendingInvites, setPendingInvites] = useState<GroupInvite[]>([])
 
   // -------------------------------------------------------------------------
   // Load groups from Supabase
@@ -278,6 +283,50 @@ export function GuildProvider({ children }: { children: ReactNode }) {
     if (member.isAdmin) return 'coadmin'
     return 'member'
   }, [groups, currentGroupId])
+
+  // -------------------------------------------------------------------------
+  // Load pending invites
+  // -------------------------------------------------------------------------
+
+  useEffect(() => {
+    if (!authUser) { setPendingInvites([]); return }
+    supabase
+      .from('group_invites')
+      .select('*')
+      .eq('to_battletag', authUser)
+      .then(({ data }) => {
+        setPendingInvites((data ?? []).map((r: Record<string, unknown>) => ({
+          id: r.id as string,
+          groupId: r.group_id as string,
+          groupName: r.group_name as string,
+          from: r.from_battletag as string,
+          code: r.group_code as string,
+        })))
+      })
+  }, [authUser])
+
+  const sendInvite = useCallback(async (groupId: string, groupName: string, groupCode: string, toBattletag: string) => {
+    if (!authUser) return
+    const { error } = await supabase.from('group_invites').upsert({
+      group_id: groupId,
+      group_name: groupName,
+      group_code: groupCode,
+      from_battletag: authUser,
+      to_battletag: toBattletag.trim(),
+    }, { onConflict: 'group_id,to_battletag' })
+    if (error) throw new Error(error.message)
+  }, [authUser])
+
+  const acceptInvite = useCallback(async (invite: GroupInvite) => {
+    await supabase.from('group_invites').delete().eq('id', invite.id)
+    setPendingInvites(prev => prev.filter(i => i.id !== invite.id))
+    // joinGroup will handle the actual group membership
+  }, [])
+
+  const declineInvite = useCallback(async (inviteId: string) => {
+    await supabase.from('group_invites').delete().eq('id', inviteId)
+    setPendingInvites(prev => prev.filter(i => i.id !== inviteId))
+  }, [])
 
   // -------------------------------------------------------------------------
   // createGroup
@@ -727,6 +776,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       loading,
       currentGroupId, setCurrentGroupId,
       currentGroup,
+      pendingInvites, sendInvite, acceptInvite, declineInvite,
       lootAttributions, setLootAttributions, saveLootAttribution, clearLootAttribution,
       bossStatuses, toggleBossKill,
       guildView, setGuildView,
