@@ -120,9 +120,11 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
         headers: { Authorization: `Bearer ${tokenData.access_token}` },
       })
       if (!userRes.ok) throw new Error(`Userinfo failed: ${userRes.status}`)
-      const userInfo = await userRes.json() as { battle_tag?: string; sub?: string; id?: number }
+      const userInfo = await userRes.json() as { battle_tag?: string; battletag?: string; sub?: string; id?: number }
 
-      data = { ...userInfo, access_token: tokenData.access_token }
+      // Blizzard returns 'battletag' or 'battle_tag' depending on region/scope
+      const battletag = userInfo.battle_tag ?? userInfo.battletag ?? null
+      data = { ...userInfo, battle_tag: battletag, access_token: tokenData.access_token }
     }
     else if (type === 'wow-characters') {
       const token = req.query.token as string ?? ''
