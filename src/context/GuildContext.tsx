@@ -371,7 +371,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       member_role: role,
     })
 
-    if (insErr) return 'not_found'
+    if (insErr) throw new Error(insErr.message)
 
     // Refresh groups to get the new one
     await refreshGroups()

@@ -83,9 +83,9 @@ export default function JoinGroupModal({ open, initialCode = '', onClose }: Prop
         showToast('Joined the group!', 'success')
         handleClose()
       }
-    } catch {
-      setError('Something went wrong. Try again.')
-      setStep(1)
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Something went wrong. Try again.')
+      setStep(3)
     } finally {
       setBusy(false)
     }
