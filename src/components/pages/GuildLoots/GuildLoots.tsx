@@ -68,7 +68,9 @@ export default function GuildLoots() {
               >
                 <span>{g.type === 'guild' ? '🏰' : g.type === 'raid' ? '⚔️' : '🌾'}</span>
                 <span className={styles.gselName}>{g.name}</span>
-                {pendingInvites.length > 0 && <span className={styles.gselBadge}>{pendingInvites.length}</span>}
+                {pendingInvites.filter(i => i.groupId === g.id).length > 0 && (
+                  <span className={styles.gselBadge}>{pendingInvites.filter(i => i.groupId === g.id).length}</span>
+                )}
               </button>
             ))}
           </div>
