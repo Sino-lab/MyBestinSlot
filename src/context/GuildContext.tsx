@@ -108,6 +108,7 @@ interface GuildContextValue {
   createGroup: (name: string, type: GroupType) => Promise<void>
   validateGroupCode: (code: string) => Promise<boolean>
   joinGroup: (code: string, role?: string, character?: import('../types').WowCharacter | null) => Promise<'ok' | 'not_found' | 'already_member'>
+  deleteGroup: (groupId: string) => Promise<void>
   kickMember: (groupId: string, battletag: string) => Promise<void>
   promoteMember: (groupId: string, battletag: string) => Promise<void>
   demoteMember: (groupId: string, battletag: string) => Promise<void>
@@ -582,6 +583,24 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       )
   }, [bossStatuses])
 
+  // deleteGroup (owner only — always deletes everything regardless of members)
+  // -------------------------------------------------------------------------
+
+  const deleteGroup = useCallback(async (groupId: string) => {
+    await Promise.all([
+      supabase.from('loot_attributions').delete().eq('group_id', groupId),
+      supabase.from('boss_statuses').delete().eq('group_id', groupId),
+      supabase.from('group_roster').delete().eq('group_id', groupId),
+      supabase.from('group_members').delete().eq('group_id', groupId),
+    ])
+    await supabase.from('groups').delete().eq('id', groupId)
+    setGroups(prev => {
+      const next = prev.filter(g => g.id !== groupId)
+      setCurrentGroupId(next[0]?.id ?? '')
+      return next
+    })
+  }, [])
+
   // leaveGroup
   // -------------------------------------------------------------------------
 
@@ -664,6 +683,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       createGroup,
       validateGroupCode,
       joinGroup,
+      deleteGroup,
       kickMember,
       promoteMember,
       demoteMember,

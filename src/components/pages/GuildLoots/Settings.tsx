@@ -20,7 +20,7 @@ interface Props {
 export default function Settings({ onInviteName, onInviteLink }: Props) {
   const {
     currentGroupId, currentGroup, currentUserRank,
-    updateGroupName, updateCoAdminPerms, leaveGroup, setGroups, groups,
+    updateGroupName, updateCoAdminPerms, leaveGroup, deleteGroup, setGroups, groups,
   } = useGuild()
   const { showToast, authUser } = useApp()
   const grp = currentGroup()
@@ -45,10 +45,16 @@ export default function Settings({ onInviteName, onInviteLink }: Props) {
     await updateCoAdminPerms(currentGroupId, perms)
   }
 
+  async function handleDelete() {
+    if (!confirm('Delete this group? This cannot be undone.')) return
+    await deleteGroup(currentGroupId)
+    showToast('Group deleted', 'remove')
+  }
+
   async function handleLeave() {
     if (!confirm('Leave this group?')) return
     await leaveGroup(currentGroupId)
-    showToast(myRank === 'owner' ? 'Group deleted' : 'You left the group', 'remove')
+    showToast('You left the group', 'remove')
   }
 
   if (!grp) return null
@@ -101,9 +107,10 @@ export default function Settings({ onInviteName, onInviteLink }: Props) {
         )}
         <div className={`${styles.card} ${styles.danger}`}>
           <div className={styles.label} style={{ color: '#ff8080' }}>Danger zone</div>
-          <button className={styles.leaveBtn} onClick={handleLeave}>
-            {myRank === 'owner' ? 'Delete group' : 'Leave group'}
-          </button>
+          {myRank === 'owner'
+            ? <button className={styles.leaveBtn} onClick={handleDelete}>Delete group</button>
+            : <button className={styles.leaveBtn} onClick={handleLeave}>Leave group</button>
+          }
         </div>
       </div>
 
