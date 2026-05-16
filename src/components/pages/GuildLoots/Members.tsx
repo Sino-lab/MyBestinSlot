@@ -8,41 +8,29 @@ interface Props {
 }
 
 export default function Members({ onInviteName, onInviteLink }: Props) {
-  const { groups, setGroups, currentGroupId, currentGroup, currentUserRank } = useGuild()
+  const { currentGroupId, currentGroup, currentUserRank, kickMember, promoteMember, demoteMember, leaveGroup } = useGuild()
   const { showToast, authUser } = useApp()
   const grp = currentGroup()
   const myRank = currentUserRank(authUser)
   const perms = grp?.coAdminPerms
 
-  function kick(name: string) {
-    setGroups(groups.map(g => g.id === currentGroupId
-      ? { ...g, members: g.members.filter(m => m.name !== name) }
-      : g
-    ))
+  async function kick(name: string) {
+    await kickMember(currentGroupId, name)
     showToast(`${name} removed`, 'remove')
   }
 
-  function promote(name: string) {
-    setGroups(groups.map(g => g.id === currentGroupId
-      ? { ...g, members: g.members.map(m => m.name === name ? { ...m, isAdmin: true } : m) }
-      : g
-    ))
+  async function promote(name: string) {
+    await promoteMember(currentGroupId, name)
     showToast(`${name} is now co-admin`, 'success')
   }
 
-  function demote(name: string) {
-    setGroups(groups.map(g => g.id === currentGroupId
-      ? { ...g, members: g.members.map(m => m.name === name ? { ...m, isAdmin: false } : m) }
-      : g
-    ))
+  async function demote(name: string) {
+    await demoteMember(currentGroupId, name)
     showToast(`${name} is now a regular member`, 'remove')
   }
 
-  function leaveGroup() {
-    setGroups(groups.map(g => g.id === currentGroupId
-      ? { ...g, members: g.members.filter(m => m.name !== authUser) }
-      : g
-    ))
+  async function handleLeave() {
+    await leaveGroup(currentGroupId)
     showToast('You left the group', 'remove')
   }
 
@@ -110,7 +98,7 @@ export default function Members({ onInviteName, onInviteLink }: Props) {
                 </button>
               )}
               {canLeave && (
-                <button className={`${styles.action} ${styles.danger}`} onClick={leaveGroup}>
+                <button className={`${styles.action} ${styles.danger}`} onClick={handleLeave}>
                   Leave group
                 </button>
               )}

@@ -4,10 +4,10 @@ import type { CoAdminPermissions } from '../../../types'
 import styles from './Settings.module.css'
 
 const PERM_LABELS: { key: keyof CoAdminPermissions; label: string; desc: string }[] = [
-  { key: 'canKick',          label: 'Kick members',       desc: 'Co-admins can remove regular members from the group.' },
-  { key: 'canInvite',        label: 'Invite members',     desc: 'Co-admins can send invitations to new players.' },
-  { key: 'canManageRoster',  label: 'Manage roster',      desc: 'Co-admins can move players between roles in the roster.' },
-  { key: 'canAttributeLoots',label: 'Attribute loots',    desc: 'Co-admins can assign loot drops to players.' },
+  { key: 'canKick',           label: 'Kick members',   desc: 'Co-admins can remove regular members from the group.' },
+  { key: 'canInvite',         label: 'Invite members', desc: 'Co-admins can send invitations to new players.' },
+  { key: 'canManageRoster',   label: 'Manage roster',  desc: 'Co-admins can move players between roles in the roster.' },
+  { key: 'canAttributeLoots', label: 'Attribute loots', desc: 'Co-admins can assign loot drops to players.' },
 ]
 
 interface Props {
@@ -16,35 +16,37 @@ interface Props {
 }
 
 export default function Settings({ onInviteName, onInviteLink }: Props) {
-  const { groups, setGroups, currentGroupId, currentGroup, setCurrentGroupId, currentUserRank } = useGuild()
+  const {
+    currentGroupId, currentGroup, currentUserRank,
+    updateGroupName, updateCoAdminPerms, leaveGroup, setGroups, groups,
+  } = useGuild()
   const { showToast, authUser } = useApp()
   const grp = currentGroup()
   const myRank = currentUserRank(authUser)
 
-  function updateName(name: string) {
-    setGroups(groups.map(g => g.id === currentGroupId ? { ...g, name } : g))
+  function handleUpdateName(name: string) {
+    // Optimistic via setGroups, then async persist
+    updateGroupName(currentGroupId, name)
   }
 
   function adjComp(role: 'tank' | 'healer' | 'dps', delta: number) {
+    // Comp is local-only for now (not persisted in DB schema)
     setGroups(groups.map(g => g.id === currentGroupId
       ? { ...g, comp: { ...g.comp, [role]: Math.max(0, g.comp[role] + delta) } }
       : g
     ))
   }
 
-  function togglePerm(key: keyof CoAdminPermissions) {
-    setGroups(groups.map(g => g.id === currentGroupId
-      ? { ...g, coAdminPerms: { ...g.coAdminPerms, [key]: !g.coAdminPerms[key] } }
-      : g
-    ))
+  async function togglePerm(key: keyof CoAdminPermissions) {
+    if (!grp) return
+    const perms = { ...grp.coAdminPerms, [key]: !grp.coAdminPerms[key] }
+    await updateCoAdminPerms(currentGroupId, perms)
   }
 
-  function leaveGroup() {
+  async function handleLeave() {
     if (!confirm('Leave this group?')) return
-    const updated = groups.filter(g => g.id !== currentGroupId)
-    setGroups(updated)
-    setCurrentGroupId(updated[0]?.id ?? '')
-    showToast('You left the group', 'remove')
+    await leaveGroup(currentGroupId)
+    showToast(myRank === 'owner' ? 'Group deleted' : 'You left the group', 'remove')
   }
 
   if (!grp) return null
@@ -55,7 +57,12 @@ export default function Settings({ onInviteName, onInviteLink }: Props) {
       <div className={styles.left}>
         <div className={styles.card}>
           <div className={styles.label}>Group name</div>
-          <input className={styles.input} value={grp.name} onChange={e => updateName(e.target.value)} style={{ width: '100%', marginTop: 6 }} />
+          <input
+            className={styles.input}
+            value={grp.name}
+            onChange={e => handleUpdateName(e.target.value)}
+            style={{ width: '100%', marginTop: 6 }}
+          />
         </div>
         <div className={styles.card}>
           <div className={styles.label} style={{ marginBottom: 10 }}>Invite members</div>
@@ -67,9 +74,9 @@ export default function Settings({ onInviteName, onInviteLink }: Props) {
         <div className={styles.card}>
           <div className={styles.label}>Roster composition</div>
           {([
-            ['tank', '🛡 Tanks', '#4a9eff'],
+            ['tank',   '🛡 Tanks',   '#4a9eff'],
             ['healer', '💚 Healers', '#50d080'],
-            ['dps', '⚔️ DPS', '#ff8040'],
+            ['dps',    '⚔️ DPS',     '#ff8040'],
           ] as const).map(([role, lbl, color]) => (
             <div key={role} className={styles.compRow}>
               <span className={styles.compLabel} style={{ color }}>{lbl}</span>
@@ -84,7 +91,7 @@ export default function Settings({ onInviteName, onInviteLink }: Props) {
         </div>
         <div className={`${styles.card} ${styles.danger}`}>
           <div className={styles.label} style={{ color: '#ff8080' }}>Danger zone</div>
-          <button className={styles.leaveBtn} onClick={leaveGroup}>
+          <button className={styles.leaveBtn} onClick={handleLeave}>
             {myRank === 'owner' ? 'Delete group' : 'Leave group'}
           </button>
         </div>

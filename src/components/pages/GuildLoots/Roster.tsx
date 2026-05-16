@@ -3,9 +3,9 @@ import { useApp } from '../../../context/AppContext'
 import styles from './Roster.module.css'
 
 const ROLES = [
-  { key: 'tank' as const, label: 'Tanks', color: '#4a9eff', icon: '🛡' },
-  { key: 'healer' as const, label: 'Healers', color: '#50d080', icon: '💚' },
-  { key: 'dps' as const, label: 'DPS', color: '#ff8040', icon: '⚔️' },
+  { key: 'tank'   as const, label: 'Tanks',   color: '#4a9eff', icon: '🛡' },
+  { key: 'healer' as const, label: 'Healers',  color: '#50d080', icon: '💚' },
+  { key: 'dps'    as const, label: 'DPS',      color: '#ff8040', icon: '⚔️' },
 ]
 
 interface Props {
@@ -13,28 +13,23 @@ interface Props {
 }
 
 export default function Roster({ onAssign }: Props) {
-  const { groups, setGroups, currentGroupId, currentGroup } = useGuild()
+  const { currentGroupId, currentGroup, updateRosterSlot } = useGuild()
   const { showToast } = useApp()
   const grp = currentGroup()
 
-  function removeFromRoster(role: 'tank' | 'healer' | 'dps', idx: number) {
+  async function removeFromRoster(role: 'tank' | 'healer' | 'dps', idx: number) {
     if (!grp) return
     const name = grp.roster[role][idx]
-    setGroups(groups.map(g => {
-      if (g.id !== currentGroupId) return g
-      const roster = { ...g.roster, [role]: [...g.roster[role]] }
-      roster[role][idx] = null
-      return { ...g, roster }
-    }))
+    await updateRosterSlot(currentGroupId, role, idx, null)
     if (name) showToast(`${name} removed from roster`, 'remove')
   }
 
   if (!grp) return null
   const comp = grp.comp
   const assigned = {
-    tank: grp.roster.tank.filter(Boolean).length,
+    tank:   grp.roster.tank.filter(Boolean).length,
     healer: grp.roster.healer.filter(Boolean).length,
-    dps: grp.roster.dps.filter(Boolean).length,
+    dps:    grp.roster.dps.filter(Boolean).length,
   }
 
   return (
