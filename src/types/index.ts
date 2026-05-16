@@ -116,6 +116,7 @@ export interface CoAdminPermissions {
   canKick: boolean
   canInvite: boolean
   canManageRoster: boolean
+  canManageComp: boolean
   canAttributeLoots: boolean
   canManageBossStatus: boolean
 }

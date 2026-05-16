@@ -60,6 +60,7 @@ function buildGroup(
     canKick: true,
     canInvite: true,
     canManageRoster: false,
+    canManageComp: false,
     canAttributeLoots: false,
     canManageBossStatus: false,
   }
@@ -265,7 +266,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       }],
       roster: { tank: [], healer: [], dps: [] },
       invites: [],
-      coAdminPerms: { canKick: true, canInvite: true, canManageRoster: false, canAttributeLoots: false, canManageBossStatus: false },
+      coAdminPerms: { canKick: true, canInvite: true, canManageRoster: false, canManageComp: false, canAttributeLoots: false, canManageBossStatus: false },
     }
     setGroups(prev => [...prev, optimisticGroup])
     setCurrentGroupId(optimisticId)
@@ -278,7 +279,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
         type,
         code,
         owner_btag: authUser,
-        co_admin_perms: { canKick: true, canInvite: true, canManageRoster: false, canAttributeLoots: false, canManageBossStatus: false },
+        co_admin_perms: { canKick: true, canInvite: true, canManageRoster: false, canManageComp: false, canAttributeLoots: false, canManageBossStatus: false },
       })
       .select()
       .single()
