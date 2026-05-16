@@ -8,7 +8,7 @@ interface Props {
 }
 
 export default function Members({ onInviteName, onInviteLink }: Props) {
-  const { currentGroupId, currentGroup, currentUserRank, kickMember, promoteMember, demoteMember, leaveGroup } = useGuild()
+  const { currentGroupId, currentGroup, currentUserRank, kickMember, promoteMember, demoteMember, leaveGroup, transferOwnership } = useGuild()
   const { showToast, authUser } = useApp()
   const grp = currentGroup()
   const myRank = currentUserRank(authUser)
@@ -54,10 +54,11 @@ export default function Members({ onInviteName, onInviteLink }: Props) {
         const isSelf     = m.name === authUser
         const targetRank = m.isOwner ? 'owner' : m.isAdmin ? 'coadmin' : 'member'
         const rc         = m.role === 'Tank' ? '#4a9eff' : m.role === 'Healer' ? '#50d080' : '#ff8040'
-        const canKick    = !isSelf && (myRank === 'owner' || (myRank === 'coadmin' && targetRank === 'member' && !!perms?.canKick))
-        const canPromote = myRank === 'owner' && targetRank === 'member'
-        const canDemote  = myRank === 'owner' && targetRank === 'coadmin'
-        const canLeave   = isSelf && myRank !== 'owner'
+        const canKick      = !isSelf && (myRank === 'owner' || (myRank === 'coadmin' && targetRank === 'member' && !!perms?.canKick))
+        const canPromote   = myRank === 'owner' && targetRank === 'member'
+        const canDemote    = myRank === 'owner' && targetRank === 'coadmin'
+        const canTransfer  = myRank === 'owner' && !isSelf
+        const canLeave     = isSelf && myRank !== 'owner'
 
         const avatarUrl = m.avatarUrl ?? null
 
@@ -100,6 +101,18 @@ export default function Members({ onInviteName, onInviteLink }: Props) {
               {canDemote && (
                 <button className={`${styles.action} ${styles.warn}`} onClick={() => demote(m.name)}>
                   Remove co-admin
+                </button>
+              )}
+              {canTransfer && (
+                <button
+                  className={`${styles.action} ${styles.warn}`}
+                  onClick={async () => {
+                    if (!confirm(`Transfer ownership to ${m.name}? You will become a regular member.`)) return
+                    await transferOwnership(currentGroupId, m.name)
+                    showToast(`${m.name} is now the owner`, 'success')
+                  }}
+                >
+                  Make owner
                 </button>
               )}
               {canKick && (

@@ -109,6 +109,7 @@ interface GuildContextValue {
   validateGroupCode: (code: string) => Promise<boolean>
   joinGroup: (code: string, role?: string, character?: import('../types').WowCharacter | null) => Promise<'ok' | 'not_found' | 'already_member'>
   deleteGroup: (groupId: string) => Promise<void>
+  transferOwnership: (groupId: string, newOwnerBattletag: string) => Promise<void>
   kickMember: (groupId: string, battletag: string) => Promise<void>
   promoteMember: (groupId: string, battletag: string) => Promise<void>
   demoteMember: (groupId: string, battletag: string) => Promise<void>
@@ -417,6 +418,26 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   }, [authUser, selectedCharacter, refreshGroups])
 
   // -------------------------------------------------------------------------
+  // transferOwnership
+  // -------------------------------------------------------------------------
+
+  const transferOwnership = useCallback(async (groupId: string, newOwnerBattletag: string) => {
+    if (!authUser) return
+    setGroups(prev => prev.map(g =>
+      g.id !== groupId ? g : {
+        ...g,
+        members: g.members.map(m => ({
+          ...m,
+          isOwner: m.name === newOwnerBattletag,
+          isAdmin: m.name === authUser ? false : m.isAdmin,
+        })),
+      }
+    ))
+    await supabase.from('group_members').update({ is_owner: true, is_admin: false }).eq('group_id', groupId).eq('battletag', newOwnerBattletag)
+    await supabase.from('group_members').update({ is_owner: false, is_admin: false }).eq('group_id', groupId).eq('battletag', authUser)
+    await supabase.from('groups').update({ owner_btag: newOwnerBattletag }).eq('id', groupId)
+  }, [authUser])
+
   // kickMember
   // -------------------------------------------------------------------------
 
@@ -684,6 +705,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       validateGroupCode,
       joinGroup,
       deleteGroup,
+      transferOwnership,
       kickMember,
       promoteMember,
       demoteMember,
