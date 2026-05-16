@@ -1,8 +1,8 @@
 import { useState } from 'react'
 import { useGuild } from '../../../context/GuildContext'
 import { useApp } from '../../../context/AppContext'
-import { GUILD_MEMBERS } from '../../../data/guild'
 import { SLOT_LABELS } from '../../../data/items'
+import { CLASS_COLORS } from '../../../data/classes'
 import type { Boss, LootAttribution } from '../../../types'
 import styles from './BossView.module.css'
 
@@ -11,23 +11,22 @@ interface Props {
 }
 
 export default function BossView({ bosses }: Props) {
-  const { lootAttributions, setLootAttributions } = useGuild()
+  const { lootAttributions, setLootAttributions, currentGroup } = useGuild()
   const { lang, showToast } = useApp()
   const [openBosses, setOpenBosses] = useState<number[]>([])
   const SL = SLOT_LABELS[lang]
+  const members = currentGroup()?.members ?? []
 
   function toggleBoss(n: number) {
     setOpenBosses(prev => prev.includes(n) ? prev.filter(x => x !== n) : [...prev, n])
   }
 
-  function attributeLoot(gk: string, member: typeof GUILD_MEMBERS[0], bossN: number, lootIdx: number) {
-    const boss = bosses.find(b => b.n === bossN)
-    const bossLoot = boss?.loots[lootIdx]
+  function attributeLoot(gk: string, memberName: string, memberColor: string, memberCls: string, lootName: string) {
     setLootAttributions(prev => ({
       ...prev,
-      [gk]: { name: member.name, color: member.color, cls: member.cls + ' ' + member.spec }
+      [gk]: { name: memberName, color: memberColor, cls: memberCls }
     }))
-    if (bossLoot) showToast(`${bossLoot.name} → ${member.name}!`, 'success')
+    showToast(`${lootName} → ${memberName}!`, 'success')
   }
 
   function clearAttribution(gk: string) {
@@ -40,10 +39,6 @@ export default function BossView({ bosses }: Props) {
         const isOpen = openBosses.includes(boss.n)
         const stc = boss.st === 'k' ? styles.stK : boss.st === 'w' ? styles.stW : styles.stS
         const stl = boss.st === 'k' ? '✓ Tué' : boss.st === 'w' ? '✗ Wipé' : '— Ignoré'
-        const conflictCount = boss.loots.filter((_, li) => {
-          const needs = GUILD_MEMBERS.filter(m => m.list.some(i => i.name === boss.loots[li].name))
-          return needs.length > 1
-        }).length
 
         return (
           <div key={boss.n} className={`${styles.bcard} ${isOpen ? styles.open : ''}`}>
@@ -51,9 +46,6 @@ export default function BossView({ bosses }: Props) {
               <div className={styles.bnum}>{bi + 1}</div>
               <div className={styles.bname}>{boss.name}</div>
               <span className={`${styles.bst} ${stc}`}>{stl}</span>
-              {conflictCount > 0 && (
-                <span className={styles.conflict}>⚔️ {conflictCount} conflit{conflictCount > 1 ? 's' : ''}</span>
-              )}
               <span className={styles.bneed}>{boss.loots.length ? `${boss.loots.length} loot${boss.loots.length > 1 ? 's' : ''}` : '—'}</span>
               <span className={styles.chev}>▼</span>
             </div>
@@ -66,16 +58,10 @@ export default function BossView({ bosses }: Props) {
                   const gk = `${boss.n}_${li}`
                   const attribution = lootAttributions[gk] as LootAttribution | undefined
                   const qc = l.q === 'legendary' ? 'var(--legendary)' : l.q === 'epic' ? 'var(--epic)' : 'var(--rare)'
-
-                  const needs = GUILD_MEMBERS
-                    .filter(m => m.list.some(i => i.name === l.name))
-                    .map(m => ({ ...m, hasIt: m.list.find(i => i.name === l.name)?.obtained ?? false }))
-                    .sort((a, b) => Number(a.hasIt) - Number(b.hasIt))
-                  const isConflict = needs.length > 1
                   const isAttributed = !!attribution
 
                   return (
-                    <div key={li} className={`${styles.lootEntry} ${isConflict ? styles.conflict2 : ''}`}>
+                    <div key={li} className={styles.lootEntry}>
                       <div className={`${styles.lrow} ${isAttributed ? styles.attributed : ''}`}>
                         <div className={`${styles.lchk} ${isAttributed ? styles.lchkDone : ''}`} onClick={() => isAttributed && clearAttribution(gk)}>
                           {isAttributed ? '✓' : ''}
@@ -85,41 +71,32 @@ export default function BossView({ bosses }: Props) {
                         <span className={styles.lilvl}>ilvl {l.ilvl}</span>
                         {isAttributed
                           ? <span className={styles.lwho}>→ <strong style={{ color: attribution.color }}>{attribution.name}</strong></span>
-                          : <span className={styles.lwho} style={{ opacity: .6 }}>{needs.length ? 'Non attribué' : '—'}</span>
+                          : <span className={styles.lwho} style={{ opacity: .6 }}>Non attribué</span>
                         }
                       </div>
 
-                      {needs.length > 0 && (
-                        <div className={`${styles.needsPanel} ${isConflict ? styles.multi : ''}`}>
-                          {isConflict
-                            ? <div className={styles.needsLabel}><span className={styles.conflictBadge}>⚔️ {needs.length} joueurs ont besoin</span><span style={{ fontSize: 10, color: 'var(--text3)' }}>Clique pour attribuer</span></div>
-                            : <div className={styles.needsLabel}><span style={{ fontSize: 11, color: 'var(--text3)' }}>1 joueur a besoin</span></div>
-                          }
+                      {members.length > 0 && (
+                        <div className={styles.needsPanel}>
+                          <div className={styles.needsLabel}>
+                            <span style={{ fontSize: 11, color: 'var(--text3)' }}>Attribuer à :</span>
+                          </div>
                           <div className={styles.needsList}>
-                            {needs.map((m, ni) => {
+                            {members.map(m => {
+                              const color = CLASS_COLORS[m.cls] ?? '#aaaaaa'
                               const isSelected = attribution?.name === m.name
-                              const prog = m.list.filter(i => i.obtained).length
-                              const pct = m.list.length > 0 ? Math.round(prog / m.list.length * 100) : 0
                               return (
                                 <div
                                   key={m.name}
-                                  className={`${styles.neederBtn} ${isSelected ? styles.selected : ''} ${m.hasIt ? styles.hasIt : ''}`}
-                                  style={{ '--mc': m.color } as React.CSSProperties}
-                                  onClick={() => !m.hasIt && attributeLoot(gk, m, boss.n, li)}
+                                  className={`${styles.neederBtn} ${isSelected ? styles.selected : ''}`}
+                                  style={{ '--mc': color } as React.CSSProperties}
+                                  onClick={() => attributeLoot(gk, m.name, color, m.cls, l.name)}
                                 >
-                                  <div className={styles.neederAvatar} style={{ background: m.color + '22', color: m.color, borderColor: m.color + '44' }}>{m.name[0]}</div>
+                                  <div className={styles.neederAvatar} style={{ background: color + '22', color, borderColor: color + '44' }}>{m.name[0]}</div>
                                   <div className={styles.neederInfo}>
-                                    <div className={styles.neederName} style={{ color: m.color }}>{m.name}</div>
-                                    <div className={styles.neederCls}>{m.cls} {m.spec}</div>
+                                    <div className={styles.neederName} style={{ color }}>{m.name}</div>
+                                    <div className={styles.neederCls}>{m.cls}</div>
                                   </div>
-                                  <div className={styles.neederRight}>
-                                    {ni === 0 && !m.hasIt && <span className={styles.prioBadge}>Priorité</span>}
-                                    {m.hasIt && <span className={styles.hasBadge}>Déjà obtenu</span>}
-                                    <div className={styles.neederProg}>
-                                      <div className={styles.neederTrack}><div className={styles.neederFill} style={{ width: pct + '%', background: m.color }} /></div>
-                                      <span className={styles.neederPct}>{pct}%</span>
-                                    </div>
-                                  </div>
+                                  {isSelected && <span className={styles.prioBadge}>✓</span>}
                                 </div>
                               )
                             })}

@@ -1,76 +1,49 @@
-import type { Raid, GuildMember, Group } from '../types'
-
-export const GUILD_MEMBERS: GuildMember[] = [
-  { name: 'Thordak', cls: 'warrior', spec: 'Fury', color: '#C69B3A', list: [
-    { slot: 'trinket1', name: "Insigne pérégrin perdu", q: 'epic', obtained: false },
-    { slot: 'mainhand', name: "Fendoir de bête d'aube agitée", q: 'epic', obtained: false },
-    { slot: 'head', name: "Cabasset de commandement de l'ost", q: 'epic', obtained: true },
-    { slot: 'chest', name: "Robe dorée d'étude abjecte", q: 'epic', obtained: false },
-    { slot: 'legs', name: 'Hauts-de-chausses de voltige dévorants', q: 'epic', obtained: true },
-  ]},
-  { name: 'Kira', cls: 'mage', spec: 'Fire', color: '#3FC7EB', list: [
-    { slot: 'trinket1', name: "Insigne pérégrin perdu", q: 'epic', obtained: true },
-    { slot: 'head', name: "Capuche à plumes de traque-ronces", q: 'epic', obtained: false },
-    { slot: 'mainhand', name: "Sceptre de la Lumière déliée", q: 'epic', obtained: false },
-    { slot: 'ring1', name: "Chevalière d'ombre envahissante", q: 'epic', obtained: false },
-  ]},
-  { name: 'Valeria', cls: 'paladin', spec: 'Holy', color: '#F48CBA', list: [
-    { slot: 'neck', name: "Chaîne d'observation ancienne", q: 'epic', obtained: false },
-    { slot: 'chest', name: "Robe dorée d'étude abjecte", q: 'epic', obtained: true },
-    { slot: 'offhand', name: "Rempart garde-combe", q: 'epic', obtained: false },
-  ]},
-  { name: 'Draxx', cls: 'deathknight', spec: 'Unholy', color: '#C41E3A', list: [
-    { slot: 'mainhand', name: "Tranche-âmes de l'avant-garde dévorante", q: 'epic', obtained: false },
-    { slot: 'head', name: "Cabasset de commandement de l'ost", q: 'epic', obtained: false },
-    { slot: 'trinket1', name: "Insigne pérégrin perdu", q: 'epic', obtained: true },
-    { slot: 'legs', name: 'Hauts-de-chausses de voltige dévorants', q: 'epic', obtained: false },
-  ]},
-]
+import type { Raid } from '../types'
 
 export const RAIDS: Raid[] = [
   {
     id: 1312,
     name: 'Midnight',
     bosses: [
-      { n: 2827, name: "Lu'ashal", st: 'k', loots: [
-        { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: true, who: 'Kira' },
-        { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: 'Valeria' },
+      { n: 2827, name: "Lu'ashal", st: 'w', loots: [
+        { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
+        { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
-        { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: true, who: 'Thordak' },
+        { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Fendoir de bête d'aube agitée", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
-        { name: "Sceptre de la Lumière déliée", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: 'Kira' },
+        { name: "Sceptre de la Lumière déliée", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Sceptre des Chants éternels rayonnant", slot: 'offhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
-      { n: 2829, name: "Thorm'belan", st: 'k', loots: [
-        { name: "Daguortie boudeuse", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: 'Draxx' },
+      { n: 2829, name: "Thorm'belan", st: 'w', loots: [
+        { name: "Daguortie boudeuse", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Lame-épine florissante", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Florapointe bestiale", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
-        { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: true, who: 'Thordak' },
+        { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
-      { n: 2828, name: 'Prédaxas', st: 'k', loots: [
+      { n: 2828, name: 'Prédaxas', st: 'w', loots: [
         { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
-        { name: "Chevalière d'ombre envahissante", slot: 'ring1', ilvl: 197, q: 'epic', mine: true, who: 'Kira' },
-        { name: "Tranche-âmes de l'avant-garde dévorante", slot: 'mainhand', ilvl: 197, q: 'epic', mine: true, who: 'Draxx' },
+        { name: "Chevalière d'ombre envahissante", slot: 'ring1', ilvl: 197, q: 'epic', mine: false, who: '—' },
+        { name: "Tranche-âmes de l'avant-garde dévorante", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Flèche d'arque-Vide", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
-      { n: 2782, name: 'Pincombe', st: 'k', loots: [
+      { n: 2782, name: 'Pincombe', st: 'w', loots: [
         { name: "Insigne pérégrin perdu", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Robe dorée d'étude abjecte", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: 'Hauts-de-chausses de voltige dévorants', slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Capuche à plumes de traque-ronces", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Cabasset de commandement de l'ost", slot: 'head', ilvl: 197, q: 'epic', mine: false, who: '—' },
-        { name: "Chaîne d'observation ancienne", slot: 'neck', ilvl: 197, q: 'epic', mine: false, who: 'Valeria' },
+        { name: "Chaîne d'observation ancienne", slot: 'neck', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Arc long brutal de sentinelle forestière", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
-        { name: "Rempart garde-combe", slot: 'offhand', ilvl: 197, q: 'epic', mine: true, who: 'Valeria' },
+        { name: "Rempart garde-combe", slot: 'offhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
     ],
   },
@@ -78,7 +51,7 @@ export const RAIDS: Raid[] = [
     id: 1314,
     name: 'Faille du Rêve',
     bosses: [
-      { n: 2795, name: 'Chimaerus, la divinité ineffable', st: 'k', loots: [
+      { n: 2795, name: 'Chimaerus, la divinité ineffable', st: 'w', loots: [
         { name: "Regard de prophète d'Aln", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Vestige suintant de la divinité ineffable", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Flèche rejetée d'Aln", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
@@ -94,7 +67,7 @@ export const RAIDS: Raid[] = [
     id: 1308,
     name: "Marche sur Quel'Danas",
     bosses: [
-      { n: 2739, name: "Belo'ren, enfant d'Al'ar", st: 'k', loots: [
+      { n: 2739, name: "Belo'ren, enfant d'Al'ar", st: 'w', loots: [
         { name: "Bague d'espoir sin'dorei", slot: 'ring1', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Plume rayonnante", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "L'œuf éternel", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
@@ -108,7 +81,7 @@ export const RAIDS: Raid[] = [
         { name: "Gardécaille de la flamme éternelle", slot: 'legs', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Poignées nées des braises", slot: 'hands', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
-      { n: 2740, name: 'Glas de minuit', st: 'k', loots: [
+      { n: 2740, name: 'Glas de minuit', st: 'w', loots: [
         { name: "Lumière du crescendo cosmique", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Ombre du requiem empyréen", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Alah'endal, la chantelaube", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
@@ -126,7 +99,7 @@ export const RAIDS: Raid[] = [
     id: 1307,
     name: 'Flèche du Vide',
     bosses: [
-      { n: 2733, name: 'Imperator Averzian', st: 'k', loots: [
+      { n: 2733, name: 'Imperator Averzian', st: 'w', loots: [
         { name: "Poids du commandement", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Guidon de la compagnie de la Lumière", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Spallières jugées par la Lumière", slot: 'shoulder', ilvl: 197, q: 'epic', mine: false, who: '—' },
@@ -141,7 +114,7 @@ export const RAIDS: Raid[] = [
         { name: "Bannière de l'imperator", slot: 'back', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Baudrier de la marche infinie", slot: 'waist', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
-      { n: 2734, name: 'Vorasius', st: 'k', loots: [
+      { n: 2734, name: 'Vorasius', st: 'w', loots: [
         { name: "Allonge inéluctable", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Victoire affamée", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Cœur de faim ancienne", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
@@ -152,7 +125,7 @@ export const RAIDS: Raid[] = [
         { name: "Brassards dépecés par le Vide", slot: 'wrist', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Bandelettes voraces", slot: 'wrist', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
-      { n: 2736, name: 'Roi déchu Salhadaar', st: 'k', loots: [
+      { n: 2736, name: 'Roi déchu Salhadaar', st: 'w', loots: [
         { name: "Lame du Crépuscule final", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Lames de poings du tourmenteur", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Bandelettes de folie cosmique", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
@@ -163,7 +136,7 @@ export const RAIDS: Raid[] = [
         { name: "Écharpe du Crépuscule dénaturé", slot: 'waist', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Grande tenue despotique", slot: 'chest', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
-      { n: 2735, name: 'Vaelgor et Ezzorak', st: 'k', loots: [
+      { n: 2735, name: 'Vaelgor et Ezzorak', st: 'w', loots: [
         { name: "Solglaive blasonné", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Caresse des frères de couvée", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Écaille-d'effroi de tristegerbe", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
@@ -173,7 +146,7 @@ export const RAIDS: Raid[] = [
         { name: "Mules de la flamme de minuit", slot: 'feet', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Cape du Néant draconique", slot: 'back', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
-      { n: 2737, name: 'Avant-garde lumaveuglée', st: 'k', loots: [
+      { n: 2737, name: 'Avant-garde lumaveuglée', st: 'w', loots: [
         { name: "Jugement final de Bellamy", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Lame du verdict aveugle", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Litanie de courroux lumaveuglé", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
@@ -183,7 +156,7 @@ export const RAIDS: Raid[] = [
         { name: "Spallières en lumécorce fleurie", slot: 'shoulder', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Poignes de l'aumônière de guerre", slot: 'hands', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
-      { n: 2738, name: 'Couronne du cosmos', st: 'k', loots: [
+      { n: 2738, name: 'Couronne du cosmos', st: 'w', loots: [
         { name: "Arc à double courbure létal de la capitaine des forestiers", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Faux écho de Turalyon", slot: 'mainhand', ilvl: 197, q: 'epic', mine: false, who: '—' },
         { name: "Ruban de l'Arpenteur des ombres", slot: 'trinket1', ilvl: 197, q: 'epic', mine: false, who: '—' },
@@ -197,34 +170,5 @@ export const RAIDS: Raid[] = [
         { name: "Poignes de la berserker détachée", slot: 'hands', ilvl: 197, q: 'epic', mine: false, who: '—' },
       ]},
     ],
-  },
-]
-
-export const INITIAL_GROUPS: Group[] = [
-  {
-    id: 'g1', name: 'Mythic Nexus', type: 'guild', code: 'MN-X4K9P2',
-    comp: { tank: 2, healer: 4, dps: 14 },
-    members: [
-      { name: 'Thordak', role: 'DPS', cls: 'Warrior', spec: 'Fury', color: '#C69B3A', status: 'active', isOwner: true,  isAdmin: false },
-      { name: 'Kira',    role: 'DPS', cls: 'Mage',    spec: 'Fire', color: '#3FC7EB', status: 'active', isOwner: false, isAdmin: true  },
-      { name: 'Valeria', role: 'Healer', cls: 'Paladin',     spec: 'Holy',       color: '#F48CBA', status: 'active', isOwner: false, isAdmin: false },
-      { name: 'Draxx',   role: 'DPS',    cls: 'Death Knight', spec: 'Unholy',     color: '#C41E3A', status: 'active', isOwner: false, isAdmin: false },
-      { name: 'Lirien',  role: 'Healer', cls: 'Druid',        spec: 'Restoration',color: '#FF7C0A', status: 'active', isOwner: false, isAdmin: false },
-      { name: 'Ramos',   role: 'Tank',   cls: 'Demon Hunter', spec: 'Vengeance',  color: '#A330C9', status: 'active', isOwner: false, isAdmin: false },
-    ],
-    roster: { tank: [], healer: [], dps: [] },
-    invites: [],
-    coAdminPerms: { canKick: true, canInvite: true, canManageRoster: false, canAttributeLoots: false },
-  },
-  {
-    id: 'g2', name: 'Farm Squad', type: 'farm', code: 'FS-T2R8W1',
-    comp: { tank: 1, healer: 2, dps: 7 },
-    members: [
-      { name: 'Thordak', role: 'DPS', cls: 'Warrior', spec: 'Fury', color: '#C69B3A', status: 'active', isOwner: true,  isAdmin: false },
-      { name: 'Kira',    role: 'DPS', cls: 'Mage',    spec: 'Fire', color: '#3FC7EB', status: 'active', isOwner: false, isAdmin: false },
-    ],
-    roster: { tank: [], healer: [], dps: [] },
-    invites: [{ from: 'Zephyr', groupName: 'Farm Squad', id: 'inv1' }],
-    coAdminPerms: { canKick: false, canInvite: false, canManageRoster: false, canAttributeLoots: false },
   },
 ]
