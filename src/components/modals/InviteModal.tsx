@@ -17,14 +17,14 @@ export default function InviteModal({ open, mode, onClose }: Props) {
   const { showToast } = useApp()
   const grp = currentGroup()
 
+  const inviteLink = `${window.location.origin}?join=${grp?.code}`
+
   function sendInvite() {
     if (!name.trim()) return
     showToast(`Invite sent to ${name}!`, 'success')
     setName('')
     onClose()
   }
-
-  const inviteLink = `${window.location.origin}/join/${grp?.code}`
 
   function copyLink() {
     navigator.clipboard.writeText(inviteLink).then(() => {
@@ -52,7 +52,7 @@ export default function InviteModal({ open, mode, onClose }: Props) {
     <Modal open={open} onClose={onClose}>
       <h3 className={styles.title}>Share invite link</h3>
       <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: '1rem' }}>
-        Share this link with your group members. It expires in 24h.
+        Share this link with your group members.
       </p>
       <div className={styles.linkRow}>
         <input className={styles.linkInput} readOnly value={inviteLink} />

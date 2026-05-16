@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { AppProvider, useApp } from './context/AppContext'
 import { GuildProvider } from './context/GuildContext'
 import Header from './components/Header/Header'
@@ -13,28 +13,29 @@ import { useBlizzardOAuthCallback } from './hooks/useBlizzardAuth'
 import styles from './App.module.css'
 
 function Pages() {
-  const { page, setPage, tooltip } = useApp()
-  const [autoJoinCode, setAutoJoinCode] = useState<string | undefined>()
+  const { page, setPage, tooltip, setPendingJoinCode } = useApp()
   useBlizzardOAuthCallback()
 
   useEffect(() => {
-    // Check URL path for invite link
-    const match = window.location.pathname.match(/^\/join\/(.+)$/)
-    if (match) {
-      const code = match[1]
-      localStorage.setItem('pendingJoinCode', code)
-      setAutoJoinCode(code)
+    // Read ?join= param from URL (invite link)
+    const params = new URLSearchParams(window.location.search)
+    const joinCode = params.get('join')
+    if (joinCode) {
+      localStorage.setItem('pendingJoinCode', joinCode)
+      setPendingJoinCode(joinCode)
       setPage('guild')
-      window.history.replaceState(null, '', '/')
+      const url = new URL(window.location.href)
+      url.searchParams.delete('join')
+      window.history.replaceState({}, '', url.toString())
       return
     }
-    // Check localStorage for code saved before OAuth redirect
+    // Restore code saved before OAuth redirect
     const pending = localStorage.getItem('pendingJoinCode')
     if (pending) {
-      setAutoJoinCode(pending)
+      setPendingJoinCode(pending)
       setPage('guild')
     }
-  }, [setPage])
+  }, [])
 
   return (
     <main className={styles.main}>
@@ -42,7 +43,7 @@ function Pages() {
         {page === 'allbis' && <AllBis />}
         {page === 'reco' && <Recommendations />}
         {page === 'mylist' && <MyList />}
-        {page === 'guild' && <GuildLoots autoJoinCode={autoJoinCode} />}
+        {page === 'guild' && <GuildLoots />}
       </div>
       {tooltip && <ItemTooltip item={tooltip.item} x={tooltip.x} y={tooltip.y} />}
       <CharacterSelectModal />

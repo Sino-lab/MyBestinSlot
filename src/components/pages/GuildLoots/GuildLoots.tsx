@@ -22,13 +22,15 @@ const TABS: { id: GuildTab; label: string }[] = [
   { id: 'settings', label: '⚙️ Settings' },
 ]
 
-export default function GuildLoots({ autoJoinCode }: { autoJoinCode?: string }) {
+export default function GuildLoots() {
   const { groups, currentGroupId, setCurrentGroupId, currentGroup, guildView, setGuildView, currentGuildTab, setCurrentGuildTab } = useGuild()
-  const { showToast } = useApp()
+  const { showToast, pendingJoinCode, setPendingJoinCode } = useApp()
   const [createOpen, setCreateOpen] = useState(false)
   const [joinOpen, setJoinOpen] = useState(false)
 
-  useEffect(() => { if (autoJoinCode) setJoinOpen(true) }, [autoJoinCode])
+  useEffect(() => {
+    if (pendingJoinCode) setJoinOpen(true)
+  }, [pendingJoinCode])
   const [inviteMode, setInviteMode] = useState<InviteMode | null>(null)
   const [assignRole, setAssignRole] = useState<'tank' | 'healer' | 'dps' | null>(null)
   const [assignIdx, setAssignIdx] = useState<number | null>(null)
@@ -141,7 +143,11 @@ export default function GuildLoots({ autoJoinCode }: { autoJoinCode?: string }) 
       </div>
 
       <CreateGroupModal open={createOpen} onClose={() => setCreateOpen(false)} />
-      <JoinGroupModal open={joinOpen} initialCode={autoJoinCode} onClose={() => setJoinOpen(false)} />
+      <JoinGroupModal
+        open={joinOpen}
+        initialCode={pendingJoinCode ?? ''}
+        onClose={() => { setJoinOpen(false); setPendingJoinCode(null) }}
+      />
       <InviteModal open={inviteMode !== null} mode={inviteMode ?? 'name'} onClose={() => setInviteMode(null)} />
       <AssignSlotModal open={assignRole !== null} role={assignRole} slotIdx={assignIdx} onClose={() => { setAssignRole(null); setAssignIdx(null) }} />
     </div>

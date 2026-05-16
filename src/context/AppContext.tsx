@@ -40,6 +40,8 @@ interface AppContextValue {
   setSelectedCharacter: (c: WowCharacter | null) => void
   charSelectOpen: boolean
   setCharSelectOpen: (open: boolean) => void
+  pendingJoinCode: string | null
+  setPendingJoinCode: (code: string | null) => void
   tooltip: { item: TooltipItem; x: number; y: number } | null
   showTooltip: (item: TooltipItem, x: number, y: number) => void
   hideTooltip: () => void
@@ -58,6 +60,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [characters, setCharacters] = useState<WowCharacter[]>([])
   const [selectedCharacter, setSelectedCharacter] = useState<WowCharacter | null>(null)
   const [charSelectOpen, setCharSelectOpen] = useState(false)
+  const [pendingJoinCode, setPendingJoinCode] = useState<string | null>(null)
   const authUser = authProfile?.battletag ?? null
   const setAuthUser = useCallback((u: string | null) => {
     if (!u) setAuthProfile(null)
@@ -120,6 +123,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
       characters, setCharacters,
       selectedCharacter, setSelectedCharacter,
       charSelectOpen, setCharSelectOpen,
+      pendingJoinCode, setPendingJoinCode,
       tooltip, showTooltip, hideTooltip,
     }}>
       {children}

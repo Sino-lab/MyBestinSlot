@@ -28,7 +28,7 @@ function buildGroup(
     const cls = normalizeClass((m.character_class as string) ?? '')
     return {
       name: (m.battletag as string) ?? '',
-      role: 'DPS' as string,
+      role: ((m.member_role as string) ?? 'dps').charAt(0).toUpperCase() + ((m.member_role as string) ?? 'dps').slice(1),
       cls,
       spec: '—',
       color: CLASS_COLORS[cls] ?? '#aaaaaa',
@@ -99,7 +99,7 @@ interface GuildContextValue {
   currentUserRank: (authUser: string | null) => MemberRank
   // Supabase actions
   createGroup: (name: string, type: GroupType) => Promise<void>
-  joinGroup: (code: string) => Promise<'ok' | 'not_found' | 'already_member'>
+  joinGroup: (code: string, role?: string) => Promise<'ok' | 'not_found' | 'already_member'>
   kickMember: (groupId: string, battletag: string) => Promise<void>
   promoteMember: (groupId: string, battletag: string) => Promise<void>
   demoteMember: (groupId: string, battletag: string) => Promise<void>
@@ -309,6 +309,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
 
   const joinGroup = useCallback(async (
     code: string,
+    role: string = 'dps',
   ): Promise<'ok' | 'not_found' | 'already_member'> => {
     if (!authUser) return 'not_found'
 
@@ -348,6 +349,7 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       character_class: selectedCharacter?.class ?? null,
       is_owner: false,
       is_admin: false,
+      member_role: role,
     })
 
     if (insErr) return 'not_found'
