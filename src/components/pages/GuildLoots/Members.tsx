@@ -1,5 +1,8 @@
+import { useState } from 'react'
 import { useGuild } from '../../../context/GuildContext'
 import { useApp } from '../../../context/AppContext'
+import { getClassColor } from '../../modals/CharacterSelectModal'
+import type { WowCharacter } from '../../../types'
 import styles from './Members.module.css'
 
 interface Props {
@@ -8,11 +11,35 @@ interface Props {
 }
 
 export default function Members({ onInviteName, onInviteLink }: Props) {
-  const { currentGroupId, currentGroup, currentUserRank, kickMember, promoteMember, demoteMember, leaveGroup, transferOwnership } = useGuild()
-  const { showToast, authUser } = useApp()
+  const { currentGroupId, currentGroup, currentUserRank, kickMember, promoteMember, demoteMember, leaveGroup, transferOwnership, joinGroup } = useGuild()
+  const { showToast, authUser, characters } = useApp()
   const grp = currentGroup()
   const myRank = currentUserRank(authUser)
   const perms = grp?.coAdminPerms
+  const [addCharOpen, setAddCharOpen] = useState(false)
+  const [addCharLoading, setAddCharLoading] = useState(false)
+
+  // Characters already in this group (by character name+realm)
+  const memberCharKeys = new Set(grp?.members.map(m => `${m.characterName}|${m.realmSlug}`) ?? [])
+  const availableChars = characters.filter(c => !memberCharKeys.has(`${c.name}|${c.realmSlug}`))
+
+  async function addCharacter(char: WowCharacter) {
+    if (!grp) return
+    setAddCharLoading(true)
+    try {
+      const result = await joinGroup(grp.code, 'dps', char)
+      if (result === 'ok') {
+        showToast(`${char.name} added to the group`, 'success')
+        setAddCharOpen(false)
+      } else if (result === 'already_member') {
+        showToast(`${char.name} is already in this group`, 'remove')
+      }
+    } catch {
+      showToast('Failed to add character', 'remove')
+    } finally {
+      setAddCharLoading(false)
+    }
+  }
 
   async function kick(name: string) {
     await kickMember(currentGroupId, name)
@@ -42,13 +69,48 @@ export default function Members({ onInviteName, onInviteLink }: Props) {
         <h3 className={styles.title}>
           Members <span className={styles.count}>({grp.members.length})</span>
         </h3>
-        {(myRank === 'owner' || (myRank === 'coadmin' && perms?.canInvite)) && (
-          <div style={{ display: 'flex', gap: 8 }}>
-            <button className={styles.hbtn} onClick={onInviteName}>👤 Invite by name</button>
-            <button className={styles.hbtn} onClick={onInviteLink}>🔗 Share link</button>
-          </div>
-        )}
+        <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap' }}>
+          {availableChars.length > 0 && (
+            <button className={styles.hbtn} onClick={() => setAddCharOpen(v => !v)}>
+              + Add my character
+            </button>
+          )}
+          {(myRank === 'owner' || (myRank === 'coadmin' && perms?.canInvite)) && (
+            <>
+              <button className={styles.hbtn} onClick={onInviteName}>👤 Invite by name</button>
+              <button className={styles.hbtn} onClick={onInviteLink}>🔗 Share link</button>
+            </>
+          )}
+        </div>
       </div>
+
+      {addCharOpen && (
+        <div className={styles.addCharPanel}>
+          <div className={styles.addCharTitle}>Choose a character to add</div>
+          {availableChars.map(char => {
+            const color = getClassColor(char.class)
+            return (
+              <button
+                key={char.id}
+                className={styles.addCharRow}
+                disabled={addCharLoading}
+                onClick={() => addCharacter(char)}
+              >
+                <div className={styles.addCharAvatar} style={{ background: color + '22', color, borderColor: color + '44', position: 'relative', overflow: 'hidden' }}>
+                  {char.name[0]}
+                  {char.avatarUrl && (
+                    <img src={char.avatarUrl} alt="" style={{ position: 'absolute', inset: 0, width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} onError={e => { (e.currentTarget as HTMLImageElement).style.display = 'none' }} />
+                  )}
+                </div>
+                <div>
+                  <div style={{ fontSize: 13, fontWeight: 600, color }}>{char.name}</div>
+                  <div style={{ fontSize: 11, color: 'var(--text3)' }}>{char.realm} · {char.class}</div>
+                </div>
+              </button>
+            )
+          })}
+        </div>
+      )}
 
       {grp.members.map(m => {
         const isSelf     = m.name === authUser
