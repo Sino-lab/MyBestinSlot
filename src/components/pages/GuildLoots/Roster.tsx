@@ -56,12 +56,16 @@ export default function Roster({ onAssign }: Props) {
             {Array.from({ length: comp[role.key] }).map((_, i) => {
               const assignedName = grp.roster[role.key][i]
               const m = grp.members.find(m => m.name === assignedName)
+              const displayName = m?.characterName ?? assignedName ?? ''
+              const clsLabel = m?.cls
+                ? m.cls.charAt(0).toUpperCase() + m.cls.slice(1)
+                : ''
               return (
                 <div key={i} className={`${styles.slot} ${assignedName ? styles.filled : ''}`} style={{ '--rc': role.color } as React.CSSProperties}>
                   {assignedName ? (
                     <>
                       <div className={styles.rsAvatar} style={{ background: (m?.color ?? role.color) + '22', color: m?.color ?? role.color, borderColor: (m?.color ?? role.color) + '44', position: 'relative', overflow: 'hidden' }}>
-                        {assignedName[0]}
+                        {displayName[0]}
                         {m?.avatarUrl && (
                           <img
                             src={m.avatarUrl}
@@ -73,11 +77,15 @@ export default function Roster({ onAssign }: Props) {
                       </div>
                       <div style={{ flex: 1, minWidth: 0 }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: 5 }}>
-                          <span style={{ fontSize: 13, fontWeight: 500, color: m?.color ?? role.color, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{assignedName}</span>
+                          <span style={{ fontSize: 13, fontWeight: 600, color: m?.color ?? role.color, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{displayName}</span>
                           {m?.isOwner && <span className={styles.rankBadge} style={{ background: 'rgba(255,128,0,.15)', border: '1px solid rgba(255,128,0,.3)', color: '#ff9a3c' }}>👑</span>}
                           {!m?.isOwner && m?.isAdmin && <span className={styles.rankBadge} style={{ background: 'rgba(100,160,255,.15)', border: '1px solid rgba(100,160,255,.3)', color: '#7ab4ff' }}>⚡</span>}
                         </div>
-                        <div style={{ fontSize: 10, color: 'var(--text3)' }}>{m?.cls} {m?.spec}</div>
+                        <div style={{ fontSize: 10, color: 'var(--text3)' }}>
+                          {clsLabel && <span style={{ color: m?.color, opacity: .85 }}>{clsLabel}</span>}
+                          {clsLabel && m?.role && <span> · </span>}
+                          {m?.role && <span>{m.role}</span>}
+                        </div>
                       </div>
                       <button className={styles.rsRemove} onClick={() => removeFromRoster(role.key, i)}>×</button>
                     </>
