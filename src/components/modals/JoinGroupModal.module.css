@@ -41,3 +41,73 @@
   letter-spacing: 0.02em;
   transition: color 0.15s;
 }
+
+/* ── Character list ── */
+.charList {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  max-height: 280px;
+  overflow-y: auto;
+  margin-bottom: 1.2rem;
+}
+
+.charBtn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 8px;
+  cursor: pointer;
+  text-align: left;
+  transition: border-color 0.15s, background 0.15s;
+  color: var(--text1);
+  width: 100%;
+}
+
+.charBtn:hover {
+  background: rgba(255,255,255,0.07);
+  border-color: var(--cc, #aaa);
+}
+
+.charBtn.charSelected {
+  background: color-mix(in srgb, var(--cc, #aaa) 12%, transparent);
+  border-color: var(--cc, #aaa);
+}
+
+.charAvatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 15px;
+  flex-shrink: 0;
+}
+
+.charInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.charName {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.charSub {
+  font-size: 11px;
+  color: var(--text3);
+  margin-top: 2px;
+}
+
+.charCheck {
+  color: #50d080;
+  font-size: 16px;
+  font-weight: 700;
+}

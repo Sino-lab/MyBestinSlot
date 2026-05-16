@@ -2,7 +2,9 @@ import { useState, useEffect } from 'react'
 import Modal from '../shared/Modal'
 import { useGuild } from '../../context/GuildContext'
 import { useApp } from '../../context/AppContext'
+import { CLASS_COLORS } from '../../data/classes'
 import { loginWithBlizzard } from '../../hooks/useBlizzardAuth'
+import type { WowCharacter } from '../../types'
 import styles from './Modal.module.css'
 import roleStyles from './JoinGroupModal.module.css'
 
@@ -21,23 +23,30 @@ interface Props {
 }
 
 export default function JoinGroupModal({ open, initialCode = '', onClose }: Props) {
-  const [step, setStep] = useState<1 | 2>(1)
+  const [step, setStep] = useState<1 | 2 | 3>(1)
   const [code, setCode] = useState(initialCode)
   const [role, setRole] = useState<Role>('dps')
+  const [character, setCharacter] = useState<WowCharacter | null>(null)
   const [error, setError] = useState('')
   const [busy, setBusy] = useState(false)
   const { joinGroup } = useGuild()
-  const { showToast, authUser } = useApp()
+  const { showToast, authUser, characters, selectedCharacter } = useApp()
 
   useEffect(() => {
     if (initialCode) setCode(initialCode)
   }, [initialCode])
+
+  // Pre-select current character
+  useEffect(() => {
+    if (open && selectedCharacter) setCharacter(selectedCharacter)
+  }, [open, selectedCharacter])
 
   function handleClose() {
     localStorage.removeItem('pendingJoinCode')
     setStep(1)
     setCode(initialCode)
     setRole('dps')
+    setCharacter(selectedCharacter)
     setError('')
     onClose()
   }
@@ -48,16 +57,21 @@ export default function JoinGroupModal({ open, initialCode = '', onClose }: Prop
     setError('')
   }
 
+  function handleNextRole() {
+    setStep(3)
+    setError('')
+  }
+
   async function handleJoin() {
     setBusy(true)
     try {
-      const result = await joinGroup(code, role)
+      const result = await joinGroup(code, role, character)
       if (result === 'not_found') {
         setError('No group found with this code.')
         setStep(1)
       } else if (result === 'already_member') {
-        setError('You are already in this group.')
-        setStep(1)
+        setError(`${character?.name ?? 'This character'} is already in this group.`)
+        setStep(3)
       } else {
         showToast('Joined the group!', 'success')
         handleClose()
@@ -70,7 +84,7 @@ export default function JoinGroupModal({ open, initialCode = '', onClose }: Prop
     }
   }
 
-  // Not logged in — prompt login (code is preserved in localStorage)
+  // Not logged in
   if (!authUser) return (
     <Modal open={open} onClose={handleClose}>
       <h3 className={styles.title}>Join a group</h3>
@@ -85,16 +99,14 @@ export default function JoinGroupModal({ open, initialCode = '', onClose }: Prop
       )}
       <div className={styles.actions}>
         <button className={styles.cancel} onClick={handleClose}>Cancel</button>
-        <button className={styles.submit} onClick={loginWithBlizzard}>
-          Sign in with Battle.net
-        </button>
+        <button className={styles.submit} onClick={loginWithBlizzard}>Sign in with Battle.net</button>
       </div>
     </Modal>
   )
 
   return (
     <Modal open={open} onClose={handleClose}>
-      {step === 1 ? (
+      {step === 1 && (
         <>
           <h3 className={styles.title}>Join a group</h3>
           <div className={styles.field}>
@@ -107,16 +119,16 @@ export default function JoinGroupModal({ open, initialCode = '', onClose }: Prop
               autoFocus
             />
             {error && <div style={{ fontSize: 12, color: '#ff7070', marginTop: 5 }}>{error}</div>}
-            <div className={styles.hint} style={{ marginTop: 6 }}>
-              Ask your group admin for the invite code.
-            </div>
+            <div className={styles.hint} style={{ marginTop: 6 }}>Ask your group admin for the invite code.</div>
           </div>
           <div className={styles.actions}>
             <button className={styles.cancel} onClick={handleClose}>Cancel</button>
             <button className={styles.submit} onClick={handleNext}>Next →</button>
           </div>
         </>
-      ) : (
+      )}
+
+      {step === 2 && (
         <>
           <h3 className={styles.title}>Choose your role</h3>
           <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: '1rem' }}>
@@ -135,10 +147,46 @@ export default function JoinGroupModal({ open, initialCode = '', onClose }: Prop
               </button>
             ))}
           </div>
-          {error && <div style={{ fontSize: 12, color: '#ff7070', marginTop: 5 }}>{error}</div>}
           <div className={styles.actions}>
             <button className={styles.cancel} onClick={() => { setStep(1); setError('') }}>← Back</button>
-            <button className={styles.submit} onClick={handleJoin} disabled={busy}>
+            <button className={styles.submit} onClick={handleNextRole}>Next →</button>
+          </div>
+        </>
+      )}
+
+      {step === 3 && (
+        <>
+          <h3 className={styles.title}>Choose a character</h3>
+          <p style={{ fontSize: 13, color: 'var(--text2)', marginBottom: '1rem' }}>
+            Which character will join this group?
+          </p>
+          <div className={roleStyles.charList}>
+            {characters.map(c => {
+              const color = CLASS_COLORS[c.class?.toLowerCase()] ?? '#aaaaaa'
+              const selected = character?.id === c.id
+              return (
+                <button
+                  key={c.id}
+                  className={`${roleStyles.charBtn} ${selected ? roleStyles.charSelected : ''}`}
+                  style={{ '--cc': color } as React.CSSProperties}
+                  onClick={() => { setCharacter(c); setError('') }}
+                >
+                  <div className={roleStyles.charAvatar} style={{ background: color + '22', color, borderColor: color + '55' }}>
+                    {c.name[0]}
+                  </div>
+                  <div className={roleStyles.charInfo}>
+                    <div className={roleStyles.charName} style={{ color }}>{c.name}</div>
+                    <div className={roleStyles.charSub}>{c.class} · {c.realm}</div>
+                  </div>
+                  {selected && <span className={roleStyles.charCheck}>✓</span>}
+                </button>
+              )
+            })}
+          </div>
+          {error && <div style={{ fontSize: 12, color: '#ff7070', marginTop: 5, marginBottom: 5 }}>{error}</div>}
+          <div className={styles.actions}>
+            <button className={styles.cancel} onClick={() => { setStep(2); setError('') }}>← Back</button>
+            <button className={styles.submit} onClick={handleJoin} disabled={busy || !character}>
               {busy ? 'Joining…' : 'Join'}
             </button>
           </div>

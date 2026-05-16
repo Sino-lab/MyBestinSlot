@@ -99,7 +99,7 @@ interface GuildContextValue {
   currentUserRank: (authUser: string | null) => MemberRank
   // Supabase actions
   createGroup: (name: string, type: GroupType) => Promise<void>
-  joinGroup: (code: string, role?: string) => Promise<'ok' | 'not_found' | 'already_member'>
+  joinGroup: (code: string, role?: string, character?: import('../types').WowCharacter | null) => Promise<'ok' | 'not_found' | 'already_member'>
   kickMember: (groupId: string, battletag: string) => Promise<void>
   promoteMember: (groupId: string, battletag: string) => Promise<void>
   demoteMember: (groupId: string, battletag: string) => Promise<void>
@@ -312,8 +312,11 @@ export function GuildProvider({ children }: { children: ReactNode }) {
   const joinGroup = useCallback(async (
     code: string,
     role: string = 'dps',
+    character?: import('../types').WowCharacter | null,
   ): Promise<'ok' | 'not_found' | 'already_member'> => {
     if (!authUser) return 'not_found'
+
+    const char = character ?? selectedCharacter
 
     const normalized = code.trim().toUpperCase().replace(/[^A-Z0-9]/g, '')
     const formatted  = normalized.length === 12
@@ -332,12 +335,14 @@ export function GuildProvider({ children }: { children: ReactNode }) {
     const grp = grpData as Record<string, unknown>
     const groupId = grp.id as string
 
-    // Check already member
+    // Check already member for this specific character
     const { data: existing } = await supabase
       .from('group_members')
       .select('id')
       .eq('group_id', groupId)
       .eq('battletag', authUser)
+      .eq('character_name', char?.name ?? '')
+      .eq('character_realm', char?.realm ?? '')
       .single()
 
     if (existing) return 'already_member'
@@ -346,9 +351,9 @@ export function GuildProvider({ children }: { children: ReactNode }) {
     const { error: insErr } = await supabase.from('group_members').insert({
       group_id: groupId,
       battletag: authUser,
-      character_name: selectedCharacter?.name ?? null,
-      character_realm: selectedCharacter?.realm ?? null,
-      character_class: selectedCharacter?.class ?? null,
+      character_name: char?.name ?? null,
+      character_realm: char?.realm ?? null,
+      character_class: char?.class ?? null,
       is_owner: false,
       is_admin: false,
       member_role: role,
