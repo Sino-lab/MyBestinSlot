@@ -85,6 +85,21 @@ export default function GuildLoots() {
           </div>
         </div>
 
+        {pendingInvites.length > 0 && (
+          <div>
+            {pendingInvites.map(inv => (
+              <div key={inv.id} className={styles.invBanner}>
+                <span className={styles.invIcon}>📩</span>
+                <span className={styles.invText}><strong>{inv.from}</strong> vous invite à rejoindre <strong>{inv.groupName}</strong></span>
+                <div style={{ display: 'flex', gap: 6, marginLeft: 'auto' }}>
+                  <button className={styles.invYes} onClick={() => handleAcceptInvite(inv)}>✓ Join</button>
+                  <button className={styles.invNo} onClick={() => handleDeclineInvite(inv.id)}>✕ Decline</button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
         {!groups.length ? (
           <div className={styles.welcome}>
             <div className={styles.wgem} />
