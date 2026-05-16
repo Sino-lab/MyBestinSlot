@@ -582,7 +582,6 @@ export function GuildProvider({ children }: { children: ReactNode }) {
       )
   }, [bossStatuses])
 
-  // -------------------------------------------------------------------------
   // leaveGroup
   // -------------------------------------------------------------------------
 
@@ -622,8 +621,12 @@ export function GuildProvider({ children }: { children: ReactNode }) {
           .eq('battletag', authUser)
       } else {
         // No other members — delete everything
-        await supabase.from('group_roster').delete().eq('group_id', groupId)
-        await supabase.from('group_members').delete().eq('group_id', groupId)
+        await Promise.all([
+          supabase.from('loot_attributions').delete().eq('group_id', groupId),
+          supabase.from('boss_statuses').delete().eq('group_id', groupId),
+          supabase.from('group_roster').delete().eq('group_id', groupId),
+          supabase.from('group_members').delete().eq('group_id', groupId),
+        ])
         await supabase.from('groups').delete().eq('id', groupId)
       }
     } else {
