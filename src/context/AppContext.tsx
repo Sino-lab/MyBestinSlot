@@ -36,6 +36,10 @@ interface AppContextValue {
   setAuthUser: (u: string | null) => void
   characters: WowCharacter[]
   setCharacters: (chars: WowCharacter[]) => void
+  selectedCharacter: WowCharacter | null
+  setSelectedCharacter: (c: WowCharacter | null) => void
+  charSelectOpen: boolean
+  setCharSelectOpen: (open: boolean) => void
   tooltip: { item: TooltipItem; x: number; y: number } | null
   showTooltip: (item: TooltipItem, x: number, y: number) => void
   hideTooltip: () => void
@@ -50,6 +54,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
   const [toast, setToast] = useState<ToastState>({ message: '', type: 'success', visible: false })
   const [authProfile, setAuthProfile] = useState<AuthProfile | null>(null)
   const [characters, setCharacters] = useState<WowCharacter[]>([])
+  const [selectedCharacter, setSelectedCharacter] = useState<WowCharacter | null>(null)
+  const [charSelectOpen, setCharSelectOpen] = useState(false)
   const authUser = authProfile?.battletag ?? null
   const setAuthUser = useCallback((u: string | null) => {
     if (!u) setAuthProfile(null)
@@ -98,6 +104,8 @@ export function AppProvider({ children }: { children: ReactNode }) {
       myList, addToList, removeFromList, toggleObtained, isInList, isInListByName,
       toast, showToast, authUser, authProfile, setAuthProfile, setAuthUser,
       characters, setCharacters,
+      selectedCharacter, setSelectedCharacter,
+      charSelectOpen, setCharSelectOpen,
       tooltip, showTooltip, hideTooltip,
     }}>
       {children}

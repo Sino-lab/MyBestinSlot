@@ -1,6 +1,7 @@
 import { useApp } from '../../context/AppContext'
 import { t } from '../../data/i18n'
 import { loginWithBlizzard } from '../../hooks/useBlizzardAuth'
+import { getClassColor } from '../modals/CharacterSelectModal'
 import styles from './Header.module.css'
 
 const TABS = [
@@ -11,11 +12,15 @@ const TABS = [
 ]
 
 export default function Header() {
-  const { lang, myList, authUser, authProfile, setAuthProfile, setCharacters, page, setPage } = useApp()
+  const {
+    lang, myList, authUser, authProfile, setAuthProfile, setCharacters,
+    page, setPage, selectedCharacter, setSelectedCharacter, setCharSelectOpen,
+  } = useApp()
 
   function logout() {
     setAuthProfile(null)
     setCharacters([])
+    setSelectedCharacter(null)
   }
 
   return (
@@ -41,10 +46,36 @@ export default function Header() {
       <div className={styles.right}>
         {authUser ? (
           <div className={styles.userInfo}>
-            <div className={styles.avatar} title={authProfile?.battletag}>
-              {authUser[0].toUpperCase()}
-            </div>
-            <span className={styles.battletag}>{authProfile?.battletag}</span>
+            {selectedCharacter ? (
+              <button
+                className={styles.charButton}
+                onClick={() => setCharSelectOpen(true)}
+                title="Click to change character"
+              >
+                <span
+                  className={styles.classDot}
+                  style={{ background: getClassColor(selectedCharacter.class) }}
+                />
+                <span className={styles.charDetails}>
+                  <span className={styles.charNameHeader}>{selectedCharacter.name}</span>
+                  <span className={styles.charRealmHeader}>{selectedCharacter.realm}</span>
+                </span>
+                <span className={styles.btSubtext}>{authProfile?.battletag}</span>
+              </button>
+            ) : (
+              <>
+                <div className={styles.avatar} title={authProfile?.battletag}>
+                  {authUser[0].toUpperCase()}
+                </div>
+                <span className={styles.battletag}>{authProfile?.battletag}</span>
+                <button
+                  className={`${styles.hbtn}`}
+                  onClick={() => setCharSelectOpen(true)}
+                >
+                  Select character
+                </button>
+              </>
+            )}
             <button className={styles.logoutBtn} onClick={logout} title="Log out">
               ✕
             </button>

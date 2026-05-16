@@ -66,7 +66,7 @@ async function fetchWowCharacters(token: string): Promise<WowCharacter[]> {
 }
 
 export function useBlizzardOAuthCallback() {
-  const { setAuthProfile, setCharacters, showToast } = useApp()
+  const { setAuthProfile, setCharacters, setCharSelectOpen, showToast } = useApp()
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -99,6 +99,7 @@ export function useBlizzardOAuthCallback() {
         // Fetch WoW characters in background
         const chars = await fetchWowCharacters(data.access_token)
         setCharacters(chars)
+        if (chars.length > 0) setCharSelectOpen(true)
       })
       .catch((err: unknown) => {
         const msg = err instanceof Error ? err.message : 'Unknown error'

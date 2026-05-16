@@ -7,6 +7,7 @@ import Recommendations from './components/pages/Recommendations/Recommendations'
 import MyList from './components/pages/MyList/MyList'
 import GuildLoots from './components/pages/GuildLoots/GuildLoots'
 import ItemTooltip from './components/shared/ItemTooltip'
+import CharacterSelectModal from './components/modals/CharacterSelectModal'
 import { useBlizzardOAuthCallback } from './hooks/useBlizzardAuth'
 import styles from './App.module.css'
 
@@ -22,6 +23,7 @@ function Pages() {
         {page === 'guild' && <GuildLoots />}
       </div>
       {tooltip && <ItemTooltip item={tooltip.item} x={tooltip.x} y={tooltip.y} />}
+      <CharacterSelectModal />
     </main>
   )
 }
